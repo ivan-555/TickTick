@@ -1,0 +1,224 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    --primary-color: rgb(40, 38, 74);
+    --light-color: rgb(231, 229, 229);
+    --accent-color: rgb(76, 99, 190);
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+}
+
+.todo-app{
+    height: 100vh;
+}
+
+header{
+    height: 20vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    transition: all 0.5s ease;
+    margin-bottom: 5vh;
+}
+
+header h1{
+    font-size: 4rem;
+    color: rgb(76, 99, 190);
+}
+
+header #new-note-button{
+    padding: 12px 25px;
+    background: var(--primary-color);
+    color: var(--light-color);
+    border: none;
+    border-radius: 5px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.add-note-modal{
+    width: 500px;
+    height: 500px;
+    background: var(--primary-color);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 10px;
+    display: none;
+    z-index: 99;
+}
+
+/* modal shown if open class is added by clicking the new-note-button */
+.add-note-modal.show{
+    display: block;
+}
+
+/* blur class blurrs background when modal is open */
+.blur{
+    filter: blur(10px);
+    transition: all 0.5s ease;
+    pointer-events: none; /* to ignore clicks on the blurred elements */
+}
+
+.add-note-modal span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--light-color);
+    font-size: 1.2rem;
+}
+
+.add-note-modal #close-modal-button{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: var(--light-color);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.add-note-modal #new-note-input{
+    width: 100%;
+    padding: 10px;
+    margin: 30px 0;
+    border: 2px solid var(--primary-color);
+    outline: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+}
+
+.add-note-modal #add-note-button{
+    padding: 10px 20px;
+    background: var(--accent-color);
+    color: var(--light-color);
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+}
+
+main{
+    display: flex;
+    height: 75vh;
+    transition: all 0.5s ease;
+}
+
+main .sidebar{
+    width: 350px;
+    background: var(--primary-color);
+    padding: 20px 0;
+    border-radius: 0 20px 0 0;
+}
+
+main .sidebar .element{
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.2rem;
+    color: var(--light-color);
+    position: relative;
+    cursor: pointer;
+}
+
+main .sidebar .element i{
+    font-size: 1.4rem;
+    width: 20px;
+}
+
+main .sidebar .element:nth-child(1) i{
+    color: rgb(56, 92, 212);
+}
+main .sidebar .element:nth-child(2) i{
+    color: rgb(231, 180, 9);
+}
+main .sidebar .element:nth-child(3) i{
+    color: rgb(232, 74, 42);
+}
+main .sidebar .element:nth-child(4) i{
+    color: rgb(42, 232, 143);
+}
+main .sidebar .element:nth-child(5) i{
+    color: rgb(42, 219, 232);
+}
+
+main .sidebar .element .counter{
+    position: absolute;
+    right: 20px;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.498);
+}
+
+main .todo-list{
+    flex: 1;
+}
+
+/* initially hidden and only shown when the corresponding sidebar link is clicked */
+main .todo-list .section{
+    display: none;
+}
+main .todo-list .section.show{
+    display: block;
+}
+
+main .todo-list .section .item{
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+main .todo-list .section .item i{
+    cursor: pointer;
+}
+
+main .todo-list .section .item i.fa-star{
+    opacity: 0.22;
+    transition: all 0.3s ease;
+}
+main .todo-list .section .item i.fa-star:hover{
+    opacity: 0.6;
+}
+main .todo-list .section .item i.fa-star.active{
+    opacity: 1;
+    color: rgb(231, 180, 9);
+}
+main .todo-list .section .item i.fa-star.animate{
+    animation: starBounce 0.5s ease;
+}
+
+@keyframes starBounce{
+    0%, 40%, 80%{
+        transform: scale(1);
+    }
+    20%, 60%, 100%{
+        transform: scale(1.2);
+    }
+}
+
+main .todo-list .section .item i.fa-trash{
+    position: absolute;
+    right: 30px;
+}
