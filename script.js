@@ -9,6 +9,52 @@ const main = document.querySelector('main');
 const header = document.querySelector('header');
 const toDoListSectionAlle = document.querySelector('.todo-list .section.alle');
 const toDoListSectionWichtig = document.querySelector('.todo-list .section.wichtig');
+const darkmodeToggleButton = document.querySelector('.darkmode-toggle');
+const body = document.querySelector('body');
+const darkmodeToggleButtonCircle = document.querySelector('.darkmode-toggle .slide .circle');
+let PageModeState = "lightmode";
+
+// Dark-Mode umschalten und Zustand im Local Storage speichern
+darkmodeToggleButton.addEventListener('click', () => {
+    darkmodeToggleButtonCircle.classList.add('animate'); // Animation aktivieren
+
+    if (PageModeState === "lightmode") {
+        PageModeState = "darkmode";
+        body.classList.remove('lightmode');
+        body.classList.add('darkmode');
+        localStorage.setItem('PageModeState', 'darkmode'); // Zustand speichern
+    } else {
+        PageModeState = "lightmode";
+        body.classList.remove('darkmode');
+        body.classList.add('lightmode');
+        localStorage.setItem('PageModeState', 'lightmode'); // Zustand speichern
+    }
+});
+
+// Dark-Mode und PageModeState basierend auf Local Storage oder den Systemeinstellungen festlegen
+window.addEventListener('load', () => {
+    const savedMode = localStorage.getItem('PageModeState');
+    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+    if (savedMode) {
+        // Falls der Modus im Local Storage gespeichert ist, diesen anwenden
+        PageModeState = savedMode;
+        body.classList.add(savedMode);
+    } else if (prefersDarkScheme.matches) {
+        PageModeState = "darkmode";
+        body.classList.add('darkmode');
+    } else {
+        PageModeState = "lightmode";
+        body.classList.add('lightmode');
+    }
+
+    // Animation nach dem Laden deaktivieren, aber den Circle korrekt positionieren
+    setTimeout(() => {
+        darkmodeToggleButtonCircle.classList.remove('animate'); // Animation entfernen
+    }, 0);
+});
+
+
 
 // ToDo Liste filtern bei Klick auf Sidebar-Element
 sidebarElements.forEach((element, index) => {
@@ -18,6 +64,21 @@ sidebarElements.forEach((element, index) => {
                 section.classList.add('show');
             } else {
                 section.classList.remove('show');
+            }
+        });
+    });
+});
+
+// Aktives Sidebar-Element markieren
+sidebarElements.forEach((element, index) => {
+    console.log(element, index);
+    element.addEventListener('click', () => {
+        sidebarElements.forEach((el, elIndex) => {
+            console.log(el, elIndex);
+            if (index === elIndex) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
             }
         });
     });

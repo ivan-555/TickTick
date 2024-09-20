@@ -6,7 +6,8 @@
 
 :root{
     --primary-color: rgb(40, 38, 74);
-    --light-color: rgb(231, 229, 229);
+    --bg-color: rgb(245, 245, 245);
+    --light-color: rgb(245, 245, 245);
     --accent-color: rgb(76, 99, 190);
 }
 
@@ -16,6 +17,7 @@ body{
 
 .todo-app{
     height: 100vh;
+    background: var(--bg-color);
 }
 
 header{
@@ -31,7 +33,10 @@ header{
 
 header h1{
     font-size: 4rem;
-    color: rgb(76, 99, 190);
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    gap: 30px;
 }
 
 header #new-note-button{
@@ -124,9 +129,91 @@ main{
 main .sidebar{
     width: 350px;
     background: var(--primary-color);
-    padding: 20px 0;
+    padding: 10px 0;
     border-radius: 0 20px 0 0;
 }
+
+main .sidebar .account{
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.2rem;
+    color: var(--light-color);
+    position: relative;
+    border-bottom: 1px dotted var(--accent-color);
+    margin-bottom: 10px;
+}
+
+main .sidebar .account .darkmode-toggle .slide{
+    position: absolute;
+    right: 20px;
+    top: 0;
+    background: white;
+    width: 100px;
+    height: 40px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+main .sidebar .account .darkmode-toggle .slide .circle{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    position: absolute;
+    left: 5px;
+}
+
+main .sidebar .account .darkmode-toggle .slide i{
+    font-size: 1.2rem;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+/* lightmode settings */
+body.lightmode .darkmode-toggle .slide .circle{
+    background: rgb(193, 137, 48);
+}
+body.lightmode .darkmode-toggle .slide i.bx-sun{
+    color: white;
+}
+body.lightmode .darkmode-toggle .slide i.bx-moon{
+    color: black;
+}
+body.lightmode main .todo-list .section .item{
+    color: var(--primary-color);
+}
+
+/* dakrmode settings */
+/* Animation des Circle nur beim Umschalten */
+.circle.animate {
+    transition: transform 0.3s ease;
+}
+
+/* Darkmode: Circle bewegt sich nach rechts */
+body.darkmode .darkmode-toggle .slide .circle {
+    background: rgb(40, 38, 74);
+    transform: translateX(60px);
+}
+
+body.darkmode .darkmode-toggle .slide i.bx-sun{
+    color: black;
+    font-size: 1.4rem;
+}
+body.darkmode .darkmode-toggle .slide i.bx-moon{
+    color: white;
+}
+body.darkmode main .todo-list .section .item{
+    color: var(--light-color);
+}
+body.darkmode{
+    --bg-color: rgb(6, 4, 34); /* überschreibt die Variable */
+}
+
 
 main .sidebar .element{
     padding: 15px 20px;
@@ -144,20 +231,46 @@ main .sidebar .element i{
     width: 20px;
 }
 
-main .sidebar .element:nth-child(1) i{
-    color: rgb(56, 92, 212);
+main .sidebar .account i{
+    font-size: 1.4rem;
+    width: 20px;
 }
+
+main .sidebar .account i.fa-gear{
+    position: absolute;
+    right: 20px;
+    font-size: 1.1rem;
+}
+
 main .sidebar .element:nth-child(2) i{
-    color: rgb(231, 180, 9);
+    color: rgb(209, 53, 53);
 }
 main .sidebar .element:nth-child(3) i{
-    color: rgb(232, 74, 42);
+    color: rgb(231, 180, 9);
 }
 main .sidebar .element:nth-child(4) i{
-    color: rgb(42, 232, 143);
+    color: rgb(232, 74, 42);
 }
 main .sidebar .element:nth-child(5) i{
+    color: rgb(42, 232, 143);
+}
+main .sidebar .element:nth-child(6) i{
     color: rgb(42, 219, 232);
+}
+
+main .sidebar .element::before{
+    content: '';
+    position: absolute;
+    left: 5px;
+    width: 4px;
+    height: 100%;
+    background: rgba(171, 206, 249, 0.53);
+    display: none;
+}
+
+main .sidebar .element.active::before
+{
+    display: block;
 }
 
 main .sidebar .element .counter{
@@ -185,9 +298,10 @@ main .todo-list .section .item{
     align-items: center;
     gap: 20px;
     font-size: 1.2rem;
-    color: var(--primary-color);
+    color: var(--light-color); /* changes to primary color in dark mode */
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     position: relative;
+    transition: all 0.3s ease;
 }
 
 main .todo-list .section .item i{

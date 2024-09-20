@@ -10,11 +10,13 @@
     <script src="script.js" defer></script>
     <!-- font awesome cdn -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- boxicons cdn -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
-<body>
+<body class="lightmode">
     <div class="todo-app">
         <header class="">
-            <h1>TickTick</h1>
+            <h1><i class="fa-solid fa-check"></i>TickTick</h1>
             <button id="new-note-button">
                 <i class="fa-solid fa-plus"></i>
                 <span>Hinzufügen</span>
@@ -30,7 +32,18 @@
 
         <main class="">
             <div class="sidebar">
-                <div class="element alle">
+                <div class="account">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Mein Profil</span>
+                    <div class="darkmode-toggle">
+                        <div class="slide">
+                            <div class="circle"></div>
+                            <i class='bx bx-sun'></i>
+                            <i class='bx bx-moon' ></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="element alle active">
                     <i class="fa-solid fa-house"></i>
                     <span>Alle</span>
                     <span class="counter">97</span>
