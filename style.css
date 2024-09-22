@@ -6,7 +6,8 @@
 
 :root{
     --primary-color: rgb(40, 38, 74);
-    --bg-color: rgb(245, 245, 245);
+    --bg-color: rgb(229, 237, 245);
+    --bg-color2: rgba(25, 25, 62, 0.095);
     --light-color: rgb(245, 245, 245);
     --accent-color: rgb(76, 99, 190);
 }
@@ -18,6 +19,7 @@ body{
 .todo-app{
     height: 100vh;
     background: var(--bg-color);
+    transition: all 0.3s ease;
 }
 
 header{
@@ -126,12 +128,12 @@ main{
     transition: all 0.5s ease;
 }
 
+/* Sidebar */
 main .sidebar{
     width: 350px;
     background: var(--primary-color);
     padding: 10px 0;
     border-radius: 0 20px 0 0;
-    margin-right: 2px;
 }
 
 main .sidebar .account{
@@ -142,7 +144,7 @@ main .sidebar .account{
     font-size: 1.2rem;
     color: var(--light-color);
     position: relative;
-    border-bottom: 1px dotted var(--accent-color);
+    border-bottom: 1px solid rgba(199, 199, 224, 0.171);
     margin-bottom: 10px;
 }
 
@@ -172,6 +174,13 @@ main .sidebar .account .darkmode-toggle .slide .circle{
     border-radius: 50%;
     position: absolute;
     left: 5px;
+    background: rgb(193, 137, 48);
+    transition: all 0.3s ease;
+}
+
+/* Transform Animation des Circle nur beim Umschalten nicht beim neu laden der Seite */
+main .sidebar .account .darkmode-toggle .slide .circle.animate {
+    transition: transform 0.3s ease;
 }
 
 main .sidebar .account .darkmode-toggle .slide i{
@@ -179,55 +188,12 @@ main .sidebar .account .darkmode-toggle .slide i{
     z-index: 2;
     transition: all 0.3s ease;
 }
-
-/* lightmode settings */
-body.lightmode .darkmode-toggle .slide .circle{
-    background: rgb(193, 137, 48);
-}
-body.lightmode .darkmode-toggle .slide i.bx-sun{
+main .sidebar .account .darkmode-toggle .slide i.bx-sun{
     color: white;
 }
-body.lightmode .darkmode-toggle .slide i.bx-moon{
+main .sidebar .account .darkmode-toggle .slide i.bx-moon{
     color: black;
 }
-body.lightmode main .todo-list .section .item{
-    color: var(--primary-color);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-/* dakrmode settings */
-/* Animation des Circle nur beim Umschalten */
-.circle.animate {
-    transition: transform 0.3s ease;
-}
-
-/* Darkmode: Circle bewegt sich nach rechts */
-body.darkmode .darkmode-toggle .slide .circle {
-    background: rgb(40, 38, 74);
-    transform: translateX(60px);
-}
-
-body.darkmode .darkmode-toggle .slide i.bx-sun{
-    color: black;
-}
-body.darkmode .darkmode-toggle .slide i.bx-moon{
-    color: white;
-}
-body.darkmode main .todo-list .section .item{
-    color: var(--light-color);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-body.darkmode{
-    --bg-color: rgb(6, 4, 34); /* überschreibt die Variable */
-}
-/* body.darkmode .todo-list {
-    box-shadow: inset 5px 5px 15px rgba(255, 255, 255, 0.1),
-                inset -5px -5px 15px rgba(229, 229, 229, 0.7);
-    box-shadow: inset 5px 5px 15px rgba(255, 255, 255, 0.1),
-                inset -5px -5px 15px rgba(27, 22, 46, 0.7),
-                0px 4px 6px rgba(0, 0, 0, 0.1);
-} */
-
 
 main .sidebar .element{
     padding: 15px 20px;
@@ -282,8 +248,7 @@ main .sidebar .element::before{
     display: none;
 }
 
-main .sidebar .element.active::before
-{
+main .sidebar .element.active::before{
     display: block;
 }
 
@@ -294,14 +259,16 @@ main .sidebar .element .counter{
     color: rgba(255, 255, 255, 0.498);
 }
 
-.todo-list {
+main .todo-list {
     flex: 1;
-    border-radius: 30px 30px 30px 30px;
-    padding: 10px 0;
-    /* box-shadow: inset 0px 5px 10px rgba(201, 184, 184, 0.15),
-                inset 0px -5px 10px rgba(148, 135, 135, 0.15), 
-                inset 5px 0px 10px rgba(150, 141, 141, 0.15), 
-                inset -5px 0px 10px rgba(0, 0, 0, 0.3); */
+}
+
+main .todo-list .wrapper{
+    width: 99%;
+    background: var(--bg-color2);
+    transition: all 0.3s ease;
+    margin: 0 auto;
+    border-radius: 20px;
 }
 
 /* initially hidden and only shown when the corresponding sidebar link is clicked */
@@ -317,10 +284,9 @@ main .todo-list .section .item{
     display: flex;
     align-items: center;
     gap: 20px;
-    font-size: 1.2rem;
-    color: var(--light-color); /* changes to primary color in dark mode */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     position: relative;
+    font-size: 1.2rem;
+    color: var(--primary-color);
     transition: all 0.3s ease;
 }
 
@@ -340,7 +306,7 @@ main .todo-list .section .item i.fa-star.active{
     color: rgb(231, 180, 9);
 }
 main .todo-list .section .item i.fa-star.animate{
-    animation: starBounce 0.5s ease;
+    animation: starBounce 0.5s ease; /* plays on click */
 }
 
 @keyframes starBounce{
@@ -356,3 +322,26 @@ main .todo-list .section .item i.fa-trash{
     position: absolute;
     right: 30px;
 }
+
+
+
+
+
+/* darkmode settings */
+body.darkmode main .sidebar .account .darkmode-toggle .slide .circle {
+    background: rgb(40, 38, 74);
+    transform: translateX(60px); /* Circle bewegt sich nach rechts */
+}
+body.darkmode main .sidebar .account .darkmode-toggle .slide i.bx-sun{
+    color: black;
+}
+body.darkmode main .sidebar .account .darkmode-toggle .slide i.bx-moon{
+    color: white;
+}
+body.darkmode main .todo-list .section .item{
+    color: var(--light-color);
+}
+body.darkmode{
+    --bg-color: rgb(6, 4, 34); /* überschreibt die Variable */
+    --bg-color2: rgba(255, 255, 255, 0.095); /* überschreibt die Variable */
+} 
