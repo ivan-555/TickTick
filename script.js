@@ -122,10 +122,7 @@ addNoteButton.addEventListener('click', () => {
     header.classList.remove('blur');
 });
 
-// Event-Delegation für das Löschen und Markieren als "Wichtig" in der "Alle"-Sektion
 toDoListSectionAlle.addEventListener('click', handleNoteClick);
-
-// Event-Delegation für das Löschen und Markieren als "Wichtig" in der "Wichtig"-Sektion
 toDoListSectionWichtig.addEventListener('click', handleNoteClick);
 
 // Event-Delegation für das Klicken auf Stern- und Papierkorb-Icons
@@ -144,18 +141,27 @@ function handleNoteClick(e) {
     // Stern-Button wurde geklickt
     if (e.target.classList.contains('fa-star')) {
         const note = notes[index];
+        const wasWichtig = note.wichtig; // Speichert den aktuellen Zustand
         note.wichtig = !note.wichtig; // Wichtig-Status umschalten
         saveNotesToLocalStorage(notes); // Speichern
 
         // Stern-Status in beiden Sektionen aktualisieren
         updateStarIcon(index, note.wichtig);
 
-        // Aufgabe in der "Wichtig"-Sektion hinzufügen oder entfernen
-        if (note.wichtig) {
-            addNoteToWichtigSection(note, index);
-        } else {
-            removeNoteFromWichtigSection(index);
+        // Nur die Animation auslösen, wenn der Stern "wichtig" wird
+        if (!wasWichtig && note.wichtig) {
+            e.target.classList.add('animate');
+            setTimeout(() => {
+                e.target.classList.remove('animate'); // Animation nach kurzer Zeit entfernen
+            }, 500); // Dauer der Animation (0.5 Sekunden)
         }
+         
+         // Aufgabe in der "Wichtig"-Sektion hinzufügen oder entfernen
+         if (note.wichtig) {
+             addNoteToWichtigSection(note, index);
+         } else {
+             removeNoteFromWichtigSection(index);
+         }
     }
 }
 

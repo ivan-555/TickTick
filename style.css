@@ -131,6 +131,7 @@ main .sidebar{
     background: var(--primary-color);
     padding: 10px 0;
     border-radius: 0 20px 0 0;
+    margin-right: 2px;
 }
 
 main .sidebar .account{
@@ -158,6 +159,11 @@ main .sidebar .account .darkmode-toggle .slide{
     justify-content: space-between;
     padding: 0 10px;
     cursor: pointer;
+    box-shadow: inset 5px 5px 15px rgba(0, 0, 0, 0.1),
+                inset -5px -5px 15px rgba(117, 105, 105, 0.7);
+    box-shadow: inset 5px 5px 15px rgba(96, 88, 88, 0.1),
+                inset -5px -5px 15px rgba(97, 91, 91, 0.7),
+                0px 4px 6px rgba(83, 79, 79, 0.1);
 }
 
 main .sidebar .account .darkmode-toggle .slide .circle{
@@ -186,6 +192,7 @@ body.lightmode .darkmode-toggle .slide i.bx-moon{
 }
 body.lightmode main .todo-list .section .item{
     color: var(--primary-color);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 /* dakrmode settings */
@@ -202,17 +209,24 @@ body.darkmode .darkmode-toggle .slide .circle {
 
 body.darkmode .darkmode-toggle .slide i.bx-sun{
     color: black;
-    font-size: 1.4rem;
 }
 body.darkmode .darkmode-toggle .slide i.bx-moon{
     color: white;
 }
 body.darkmode main .todo-list .section .item{
     color: var(--light-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 body.darkmode{
     --bg-color: rgb(6, 4, 34); /* überschreibt die Variable */
 }
+/* body.darkmode .todo-list {
+    box-shadow: inset 5px 5px 15px rgba(255, 255, 255, 0.1),
+                inset -5px -5px 15px rgba(229, 229, 229, 0.7);
+    box-shadow: inset 5px 5px 15px rgba(255, 255, 255, 0.1),
+                inset -5px -5px 15px rgba(27, 22, 46, 0.7),
+                0px 4px 6px rgba(0, 0, 0, 0.1);
+} */
 
 
 main .sidebar .element{
@@ -280,8 +294,14 @@ main .sidebar .element .counter{
     color: rgba(255, 255, 255, 0.498);
 }
 
-main .todo-list{
+.todo-list {
     flex: 1;
+    border-radius: 30px 30px 30px 30px;
+    padding: 10px 0;
+    /* box-shadow: inset 0px 5px 10px rgba(201, 184, 184, 0.15),
+                inset 0px -5px 10px rgba(148, 135, 135, 0.15), 
+                inset 5px 0px 10px rgba(150, 141, 141, 0.15), 
+                inset -5px 0px 10px rgba(0, 0, 0, 0.3); */
 }
 
 /* initially hidden and only shown when the corresponding sidebar link is clicked */
