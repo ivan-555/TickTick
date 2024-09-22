@@ -7,13 +7,69 @@
 :root{
     --primary-color: rgb(40, 38, 74);
     --bg-color: rgb(229, 237, 245);
-    --bg-color2: rgba(25, 25, 62, 0.095);
-    --light-color: rgb(245, 245, 245);
+    --bg-color-alt: rgba(25, 25, 62, 0.095);
+    --light-color: rgb(245, 245, 245); /* white text color */
     --accent-color: rgb(76, 99, 190);
 }
 
 body{
     font-family: 'Poppins', sans-serif;
+}
+
+.preloader{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+    opacity: 1;
+    transition: all 0.5s ease;
+}
+.preloader img{
+    width: 80px;
+    filter: hue-rotate(40deg);
+    transition: all 0.3s ease;
+    margin-right: 20px;
+    animation: checkmarkScaling 1.5s ease;
+}
+.preloader h1{
+    font-size: 4rem;
+    color: #607eff;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    transition: all 0.3s ease;
+    animation: headerScaling 1.5s ease;
+}
+.preloader.hidden{
+    opacity: 0;
+    visibility: hidden;
+}
+
+@keyframes checkmarkScaling {
+    0% {
+        opacity: 0;
+        transform: translateX(-100px) scale(3);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+@keyframes headerScaling {
+    0% {
+        opacity: 0;
+        transform: translateX(10px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0px) scale(1);
+    }   
 }
 
 .todo-app{
@@ -33,12 +89,19 @@ header{
     margin-bottom: 5vh;
 }
 
+header img {
+    width: 70px;
+    filter: hue-rotate(40deg);
+    transition: all 0.3s ease;
+}
+
 header h1{
     font-size: 4rem;
-    color: var(--accent-color);
+    color: #607eff;
     display: flex;
     align-items: center;
     gap: 30px;
+    transition: all 0.3s ease;
 }
 
 header #new-note-button{
@@ -56,7 +119,7 @@ header #new-note-button{
 
 .add-note-modal{
     width: 500px;
-    height: 500px;
+    height: 250px;
     background: var(--primary-color);
     position: fixed;
     top: 50%;
@@ -125,7 +188,6 @@ header #new-note-button{
 main{
     display: flex;
     height: 75vh;
-    transition: all 0.5s ease;
 }
 
 /* Sidebar */
@@ -216,26 +278,11 @@ main .sidebar .account i{
     width: 20px;
 }
 
-main .sidebar .account i.fa-gear{
-    position: absolute;
-    right: 20px;
-    font-size: 1.1rem;
-}
-
 main .sidebar .element:nth-child(2) i{
     color: rgb(209, 53, 53);
 }
 main .sidebar .element:nth-child(3) i{
     color: rgb(231, 180, 9);
-}
-main .sidebar .element:nth-child(4) i{
-    color: rgb(232, 74, 42);
-}
-main .sidebar .element:nth-child(5) i{
-    color: rgb(42, 232, 143);
-}
-main .sidebar .element:nth-child(6) i{
-    color: rgb(42, 219, 232);
 }
 
 main .sidebar .element::before{
@@ -265,10 +312,35 @@ main .todo-list {
 
 main .todo-list .wrapper{
     width: 99%;
-    background: var(--bg-color2);
+    max-height: 100%;
+    overflow: auto;
+    background: var(--bg-color-alt);
     transition: all 0.3s ease;
     margin: 0 auto;
     border-radius: 20px;
+    scrollbar-width: thin; /* Dünne Scrollbar in Firefox */
+    scrollbar-color: rgba(22, 181, 213, 0.338) transparent; /* Daumenfarbe und Trackfarbe in Firefox */
+}
+
+/* Scrollbar Breite (für vertikale Scrollbars) */
+main .todo-list .wrapper::-webkit-scrollbar {
+    width: 7px;  /* Breite der vertikalen Scrollbar */
+}
+
+/* Track der Scrollbar */
+main .todo-list .wrapper::-webkit-scrollbar-track {
+    background: transparent; /* Farbe des Tracks */
+}
+
+/* Daumen der Scrollbar */
+main .todo-list .wrapper::-webkit-scrollbar-thumb {
+    background-color: rgba(22, 181, 213, 0.338); /* Farbe des Scroll-Daumen */
+    border-radius: 10px;
+}
+
+/* Hover-Effekt auf dem Scroll-Daumen */
+main .todo-list .wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(22, 181, 213, 0.518); /* Farbe, wenn die Maus über den Daumen fährt */
 }
 
 /* initially hidden and only shown when the corresponding sidebar link is clicked */
@@ -296,7 +368,6 @@ main .todo-list .section .item i{
 
 main .todo-list .section .item i.fa-star{
     opacity: 0.22;
-    transition: all 0.3s ease;
 }
 main .todo-list .section .item i.fa-star:hover{
     opacity: 0.6;
@@ -328,6 +399,10 @@ main .todo-list .section .item i.fa-trash{
 
 
 /* darkmode settings */
+body.darkmode{
+    --bg-color: rgb(15, 14, 39); /* überschreibt die Variable */
+    --bg-color-alt: rgba(255, 255, 255, 0.095); /* überschreibt die Variable */
+} 
 body.darkmode main .sidebar .account .darkmode-toggle .slide .circle {
     background: rgb(40, 38, 74);
     transform: translateX(60px); /* Circle bewegt sich nach rechts */
@@ -341,7 +416,15 @@ body.darkmode main .sidebar .account .darkmode-toggle .slide i.bx-moon{
 body.darkmode main .todo-list .section .item{
     color: var(--light-color);
 }
-body.darkmode{
-    --bg-color: rgb(6, 4, 34); /* überschreibt die Variable */
-    --bg-color2: rgba(255, 255, 255, 0.095); /* überschreibt die Variable */
-} 
+body.darkmode header img{
+    filter: hue-rotate(0deg);
+}
+body.darkmode header h1{
+    color: #00a0e9;
+}
+body.darkmode .preloader img{
+    filter: hue-rotate(0deg);
+}
+body.darkmode .preloader h1{
+    color: #00a0e9;
+}

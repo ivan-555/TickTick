@@ -13,6 +13,18 @@ const darkmodeToggleButton = document.querySelector('.darkmode-toggle');
 const body = document.querySelector('body');
 const darkmodeToggleButtonCircle = document.querySelector('.darkmode-toggle .slide .circle');
 let PageModeState = "lightmode";
+const AllNotesCounter = document.querySelector('.sidebar .element.alle .counter');
+const ImportantNotesCounter = document.querySelector('.sidebar .element.wichtig .counter');
+
+// Page preloader
+window.addEventListener('load', function() {
+    const preloader = document.getElementById('preloader');
+    
+    // wait min x seconds before hiding the preloader
+    setTimeout(function() {
+        preloader.classList.add('hidden');
+    }, 2000);
+});
 
 // Dark-Mode umschalten und Zustand im Local Storage speichern
 darkmodeToggleButton.addEventListener('click', () => {
@@ -180,6 +192,9 @@ function addNoteToWichtigSection(note, index) {
         <i class="fa-solid fa-trash" data-index="${index}"></i>
     `;
     toDoListSectionWichtig.appendChild(newNoteElement); // Aufgabe in der "Wichtig"-Sektion hinzufügen
+
+    // Zähler für "Wichtig" aktualisieren
+    updateCounters();
 }
 
 // Aufgabe aus der "Wichtig"-Sektion entfernen
@@ -188,6 +203,9 @@ function removeNoteFromWichtigSection(index) {
     if (noteElement) {
         noteElement.parentElement.remove(); // Entfernt das Element
     }
+
+    // Zähler für "Wichtig" aktualisieren
+    updateCounters();
 }
 
 // Funktion zur Synchronisierung des Stern-Icons in beiden Sektionen
@@ -246,6 +264,18 @@ function renderNotes() {
             addNoteToWichtigSection(note, index);
         }
     });
+
+    // Nach dem Rendern der Notizen die Zähler aktualisieren
+    updateCounters();
+}
+
+// Funktion, um die Anzahl der Notizen in beiden Sektionen zu zählen
+function updateCounters() {
+    const allItemsCount = toDoListSectionAlle.querySelectorAll(".item").length;
+    const importantItemsCount = toDoListSectionWichtig.querySelectorAll(".item").length;
+
+    AllNotesCounter.innerText = allItemsCount;  // Zähler für "Alle" aktualisieren
+    ImportantNotesCounter.innerText = importantItemsCount;  // Zähler für "Wichtig" aktualisieren
 }
 
 // Beim Laden der Seite die Notizen rendern

@@ -12,11 +12,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- boxicons cdn -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- favicon -->
+    <link rel="icon" href="favicon.png" type="image/x-icon">
 </head>
 <body class="lightmode">
+    <div class="preloader" id="preloader">
+        <img src="checkmark.png">
+        <h1>TickTick</h1>
+    </div>
+
     <div class="todo-app">
         <header class="">
-            <h1><i class="fa-solid fa-check"></i>TickTick</h1>
+            <h1><img src="checkmark.png"></i>TickTick</h1>
             <button id="new-note-button">
                 <i class="fa-solid fa-plus"></i>
                 <span>Hinzufügen</span>
@@ -26,7 +33,7 @@
         <div class="add-note-modal">
             <i class="fa-regular fa-circle-xmark" id="close-modal-button"></i>
             <span>Neue Notiz</span>
-            <input type="text" id="new-note-input">
+            <input type="text" id="new-note-input" placeholder="Notiztext...">
             <span id="add-note-button">Hinzufügen</span>
         </div>
 
@@ -46,26 +53,11 @@
                 <div class="element alle active">
                     <i class="fa-solid fa-house"></i>
                     <span>Alle</span>
-                    <span class="counter">97</span>
+                    <span class="counter"></span>
                 </div>
                 <div class="element wichtig">
                     <i class="fa-solid fa-star"></i>
                     <span>Wichtig</span>
-                    <span class="counter"></span>
-                </div>
-                <div class="element heute">
-                    <i class="fa-solid fa-calendar-day"></i>
-                    <span>Heute</span>
-                    <span class="counter"></span>
-                </div>
-                <div class="element morgen">
-                    <i class="fa-solid fa-calendar-plus"></i>
-                    <span>Morgen</span>
-                    <span class="counter"></span>
-                </div>
-                <div class="element woche">
-                    <i class="fa-solid fa-calendar-week"></i>
-                    <span>Nächste 7 Tage</span>
                     <span class="counter"></span>
                 </div>
             </div>
@@ -74,9 +66,6 @@
                 <div class="wrapper">
                     <div class="section alle show"></div>
                     <div class="section wichtig"></div>
-                    <div class="section heute"></div>
-                    <div class="section morgen"></div>
-                    <div class="section woche"></div>
                 </div>
             </div>
         </main>
