@@ -13,32 +13,21 @@
     <!-- boxicons cdn -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <!-- favicon -->
-    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <link rel="icon" href="checkmark.png" type="image/x-icon">
 </head>
-<body class="lightmode">
+
+<body class="">
     <div class="preloader" id="preloader">
         <img src="checkmark.png">
         <h1>TickTick</h1>
     </div>
 
     <div class="todo-app">
-        <header class="">
-            <h1><img src="checkmark.png"></i>TickTick</h1>
-            <button id="new-note-button">
-                <i class="fa-solid fa-plus"></i>
-                <span>Hinzufügen</span>
-            </button>
-        </header>
-
-        <div class="add-note-modal">
-            <i class="fa-regular fa-circle-xmark" id="close-modal-button"></i>
-            <span>Neue Notiz</span>
-            <input type="text" id="new-note-input" placeholder="Notiztext...">
-            <span id="add-note-button">Hinzufügen</span>
-        </div>
-
-        <main class="">
+        <div class="blurrer"></div>
             <div class="sidebar">
+                <div class="mobile-sidebar-toggle">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
                 <div class="account">
                     <i class="fa-solid fa-user"></i>
                     <span>Mein Profil</span>
@@ -62,13 +51,27 @@
                 </div>
             </div>
 
-            <div class="todo-list">
-                <div class="wrapper">
+            <main>
+                <header>
+                    <h1><img src="checkmark.png"></i>TickTick</h1>
+                    <button id="new-note-button">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Hinzufügen</span>
+                    </button>
+                </header>
+
+                <div class="add-note-modal">
+                    <i class="fa-regular fa-circle-xmark" id="close-modal-button"></i>
+                    <span>Neue Notiz</span>
+                    <input type="text" id="new-note-input" placeholder="Notiztext...">
+                    <span id="add-note-button">Hinzufügen</span>
+                </div>
+
+                <div class="todo-list">
                     <div class="section alle show"></div>
                     <div class="section wichtig"></div>
                 </div>
-            </div>
-        </main>
+            </main>
     </div>
 </body>
 </html>

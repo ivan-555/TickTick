@@ -15,6 +15,31 @@ const darkmodeToggleButtonCircle = document.querySelector('.darkmode-toggle .sli
 let PageModeState = "lightmode";
 const AllNotesCounter = document.querySelector('.sidebar .element.alle .counter');
 const ImportantNotesCounter = document.querySelector('.sidebar .element.wichtig .counter');
+const MobileSidebarToggle = document.querySelector('.mobile-sidebar-toggle');
+const Sidebar = document.querySelector('.sidebar');
+const SidebarToggleIcon = document.querySelector('.mobile-sidebar-toggle i');
+let SidebarState = "closed";
+const blurrer = document.querySelector('.blurrer');
+
+
+// Mobile Sidebar Toggle
+MobileSidebarToggle.addEventListener('click', () => {
+    if (SidebarState === "closed") {
+        Sidebar.classList.add('open');
+        SidebarToggleIcon.style.transform = 'rotate(-180deg)';
+        SidebarState = "open";
+        if (window.innerWidth < 500) {
+            MobileSidebarToggle.classList.add("shift");
+        }
+    } else {
+        Sidebar.classList.remove('open');
+        SidebarToggleIcon.style.transform = 'rotate(0deg)';
+        SidebarState = "closed";
+        if (window.innerWidth < 500) {
+            MobileSidebarToggle.classList.remove("shift");
+        }
+    }
+});
 
 // Page preloader
 window.addEventListener('load', function() {
@@ -26,10 +51,9 @@ window.addEventListener('load', function() {
     }, 2000);
 });
 
+
 // Dark-Mode umschalten und Zustand im Local Storage speichern
 darkmodeToggleButton.addEventListener('click', () => {
-    darkmodeToggleButtonCircle.classList.add('animate'); // Animation aktivieren
-
     if (PageModeState === "lightmode") {
         PageModeState = "darkmode";
         body.classList.remove('lightmode');
@@ -59,11 +83,6 @@ window.addEventListener('load', () => {
         PageModeState = "lightmode";
         body.classList.add('lightmode');
     }
-
-    // Animation nach dem Laden deaktivieren, aber den Circle korrekt positionieren
-    setTimeout(() => {
-        darkmodeToggleButtonCircle.classList.remove('animate'); // Animation entfernen
-    }, 0);
 });
 
 
@@ -71,6 +90,12 @@ window.addEventListener('load', () => {
 // ToDo Liste filtern bei Klick auf Sidebar-Element
 sidebarElements.forEach((element, index) => {
     element.addEventListener('click', () => {
+        Sidebar.classList.remove('open');
+        SidebarToggleIcon.style.transform = 'rotate(0deg)';
+        SidebarState = "closed";
+        if (window.innerWidth < 500) {
+            MobileSidebarToggle.classList.remove("shift");
+        }
         toDoListSections.forEach((section, sectionIndex) => {
             if (index === sectionIndex) {
                 section.classList.add('show');
@@ -99,8 +124,7 @@ sidebarElements.forEach((element, index) => {
 // Modal öffnen und Seite blurren
 newNoteButton.addEventListener('click', () => {
     addNoteModal.classList.add('show');
-    main.classList.add('blur');
-    header.classList.add('blur');
+    blurrer.classList.add("active");
     newNoteInput.focus(); // Automatisch das Eingabefeld fokussieren
 });
 
@@ -108,8 +132,7 @@ newNoteButton.addEventListener('click', () => {
 closeModalButton.addEventListener('click', () => {
     addNoteModal.classList.remove('show');
     newNoteInput.value = ''; // Eingabefeld zurücksetzen
-    main.classList.remove('blur');
-    header.classList.remove('blur');
+    blurrer.classList.remove("active");
 });
 
 // Neue Notiz hinzufügen
@@ -130,14 +153,20 @@ addNoteButton.addEventListener('click', () => {
     renderNotes();
     newNoteInput.value = ''; // Eingabefeld zurücksetzen
     addNoteModal.classList.remove('show');
-    main.classList.remove('blur');
-    header.classList.remove('blur');
+    blurrer.classList.remove("active");
+});
+addNoteModal.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        addNoteButton.click();
+    }
 });
 
+
+// Event-Delegation für das Klicken auf Stern- und Papierkorb-Icons
 toDoListSectionAlle.addEventListener('click', handleNoteClick);
 toDoListSectionWichtig.addEventListener('click', handleNoteClick);
 
-// Event-Delegation für das Klicken auf Stern- und Papierkorb-Icons
 function handleNoteClick(e) {
     const notes = loadNotesFromLocalStorage();
     const index = e.target.getAttribute('data-index'); // Index des Elements

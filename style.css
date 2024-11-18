@@ -5,16 +5,21 @@
 }
 
 :root{
+    /* fixed */
     --primary-color: rgb(40, 38, 74);
+    --white-color: rgb(245, 245, 245);
+
+    /* change in darkmode */
     --bg-color: rgb(229, 237, 245);
-    --bg-color-alt: rgba(25, 25, 62, 0.095);
-    --light-color: rgb(245, 245, 245); /* white text color */
-    --accent-color: rgb(76, 99, 190);
+    --text-color: black;
+    --highlight-color: rgba(62, 25, 25, 0.095);
 }
 
 body{
     font-family: 'Poppins', sans-serif;
 }
+
+/* ------------------------ Preloader ----------------------------- */
 
 .preloader{
     position: fixed;
@@ -26,10 +31,16 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 99;
+    z-index: 999999;
     opacity: 1;
     transition: all 0.5s ease;
 }
+
+.preloader.hidden{
+    opacity: 0;
+    visibility: hidden;
+}
+
 .preloader img{
     width: 80px;
     filter: hue-rotate(40deg);
@@ -37,18 +48,14 @@ body{
     margin-right: 20px;
     animation: checkmarkScaling 1.5s ease;
 }
+
 .preloader h1{
     font-size: 4rem;
     color: #607eff;
     display: flex;
     align-items: center;
-    gap: 30px;
     transition: all 0.3s ease;
     animation: headerScaling 1.5s ease;
-}
-.preloader.hidden{
-    opacity: 0;
-    visibility: hidden;
 }
 
 @keyframes checkmarkScaling {
@@ -56,15 +63,22 @@ body{
         opacity: 0;
         transform: translateX(-100px) scale(3);
     }
+    20% {
+        opacity: 0;
+    }
     100% {
         opacity: 1;
         transform: translateX(0) scale(1);
     }
 }
+
 @keyframes headerScaling {
     0% {
         opacity: 0;
         transform: translateX(10px) scale(0.9);
+    }
+    20% {
+        opacity: 0;
     }
     100% {
         opacity: 1;
@@ -72,24 +86,150 @@ body{
     }   
 }
 
+/* ---------------------------- APP ------------------------------ */
+
 .todo-app{
-    height: 100vh;
+    height: 100svh;
     background: var(--bg-color);
     transition: all 0.3s ease;
+    overflow: hidden;
+    display: flex;
 }
 
+/* ------------------------------ Sidebar ------------------------- */
+
+/* Sidebar */
+.sidebar{
+    width: 350px;
+    height: 100%;
+    background: var(--primary-color);
+    color: var(--white-color);
+    z-index: 2;
+}
+
+.sidebar .mobile-sidebar-toggle{
+    display: none;
+}
+
+.sidebar .account{
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.2rem;
+    position: relative;
+    border-bottom: 1px solid rgba(199, 199, 224, 0.171);
+    margin-bottom: 10px;
+}
+
+.sidebar .account .darkmode-toggle .slide{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    width: 80px;
+    height: 35px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.sidebar .account .darkmode-toggle .slide .circle{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    position: absolute;
+    left: 5px;
+    background: rgb(193, 137, 48);
+    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
+}
+
+.sidebar .account .darkmode-toggle .slide i{
+    font-size: 1.2rem;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+.sidebar .account .darkmode-toggle .slide i.bx-sun{
+    color: white;
+}
+.sidebar .account .darkmode-toggle .slide i.bx-moon{
+    color: black;
+}
+
+.sidebar .element{
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.2rem;
+    position: relative;
+    cursor: pointer;
+}
+
+.sidebar .element i{
+    font-size: 1.4rem;
+    width: 20px;
+}
+
+.sidebar .account i{
+    font-size: 1.4rem;
+    width: 20px;
+}
+
+.sidebar .element.alle i{
+    color: rgb(209, 53, 53);
+}
+.sidebar .element.wichtig i{
+    color: rgb(231, 180, 9);
+}
+
+.sidebar .element::before{
+    content: '';
+    position: absolute;
+    left: 5px;
+    width: 4px;
+    height: 100%;
+    background: rgba(171, 206, 249, 0.53);
+    display: none;
+}
+
+.sidebar .element.active::before{
+    display: block;
+}
+
+.sidebar .element .counter{
+    position: absolute;
+    right: 20px;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.498);
+}
+
+/* ------------------------- Main ------------------------------ */
+
+main{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* --------------------- Header ---------------------------------- */
+
 header{
-    height: 20vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 30px;
-    transition: all 0.5s ease;
-    margin-bottom: 5vh;
+    padding: 20px 0;
 }
 
-header img {
+header h1 img {
     width: 70px;
     filter: hue-rotate(40deg);
     transition: all 0.3s ease;
@@ -100,14 +240,14 @@ header h1{
     color: #607eff;
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
     transition: all 0.3s ease;
 }
 
 header #new-note-button{
     padding: 12px 25px;
     background: var(--primary-color);
-    color: var(--light-color);
+    color: var(--white-color);
     border: none;
     border-radius: 5px;
     font-size: 1.4rem;
@@ -117,37 +257,48 @@ header #new-note-button{
     gap: 15px;
 }
 
+/* ------------------------- Add Note Modal ---------------------- */
+
+.blurrer{
+    filter: blur(10px);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.blurrer.active{
+    opacity: 1;
+    visibility: visible;
+}
+
 .add-note-modal{
     width: 500px;
     height: 250px;
     background: var(--primary-color);
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
     border-radius: 10px;
     display: none;
-    z-index: 99;
+    z-index: 9999;
 }
 
-/* modal shown if open class is added by clicking the new-note-button */
 .add-note-modal.show{
     display: block;
-}
-
-/* blur class blurrs background when modal is open */
-.blur{
-    filter: blur(10px);
-    transition: all 0.5s ease;
-    pointer-events: none; /* to ignore clicks on the blurred elements */
 }
 
 .add-note-modal span{
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--light-color);
+    color: var(--white-color);
     font-size: 1.2rem;
 }
 
@@ -155,7 +306,7 @@ header #new-note-button{
     position: absolute;
     top: 20px;
     left: 20px;
-    color: var(--light-color);
+    color: var(--white-color);
     cursor: pointer;
     font-size: 1.2rem;
 }
@@ -172,8 +323,8 @@ header #new-note-button{
 
 .add-note-modal #add-note-button{
     padding: 10px 20px;
-    background: var(--accent-color);
-    color: var(--light-color);
+    background: rgb(65, 63, 111);
+    color: var(--white-color);
     border: none;
     border-radius: 5px;
     font-size: 1.2rem;
@@ -185,198 +336,71 @@ header #new-note-button{
     transform: translateX(50%);
 }
 
-main{
-    display: flex;
-    height: 75vh;
-}
+/* ----------------------------- Todo List ----------------------- */
 
-/* Sidebar */
-main .sidebar{
-    width: 350px;
-    background: var(--primary-color);
-    padding: 10px 0;
-    border-radius: 0 20px 0 0;
-}
-
-main .sidebar .account{
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    font-size: 1.2rem;
-    color: var(--light-color);
-    position: relative;
-    border-bottom: 1px solid rgba(199, 199, 224, 0.171);
+.todo-list {
+    flex: 1;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(22, 181, 213, 0.338) transparent;
+    padding: 10px;
+    padding-bottom: 0;
     margin-bottom: 10px;
 }
 
-main .sidebar .account .darkmode-toggle .slide{
-    position: absolute;
-    right: 20px;
-    top: 0;
-    background: white;
-    width: 100px;
-    height: 40px;
-    border-radius: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    cursor: pointer;
-    box-shadow: inset 5px 5px 15px rgba(0, 0, 0, 0.1),
-                inset -5px -5px 15px rgba(117, 105, 105, 0.7);
-    box-shadow: inset 5px 5px 15px rgba(96, 88, 88, 0.1),
-                inset -5px -5px 15px rgba(97, 91, 91, 0.7),
-                0px 4px 6px rgba(83, 79, 79, 0.1);
+.todo-list::-webkit-scrollbar {
+    width: 7px;
 }
 
-main .sidebar .account .darkmode-toggle .slide .circle{
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    position: absolute;
-    left: 5px;
-    background: rgb(193, 137, 48);
-    transition: all 0.3s ease;
+.todo-list::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-/* Transform Animation des Circle nur beim Umschalten nicht beim neu laden der Seite */
-main .sidebar .account .darkmode-toggle .slide .circle.animate {
-    transition: transform 0.3s ease;
-}
-
-main .sidebar .account .darkmode-toggle .slide i{
-    font-size: 1.2rem;
-    z-index: 2;
-    transition: all 0.3s ease;
-}
-main .sidebar .account .darkmode-toggle .slide i.bx-sun{
-    color: white;
-}
-main .sidebar .account .darkmode-toggle .slide i.bx-moon{
-    color: black;
-}
-
-main .sidebar .element{
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    font-size: 1.2rem;
-    color: var(--light-color);
-    position: relative;
-    cursor: pointer;
-}
-
-main .sidebar .element i{
-    font-size: 1.4rem;
-    width: 20px;
-}
-
-main .sidebar .account i{
-    font-size: 1.4rem;
-    width: 20px;
-}
-
-main .sidebar .element:nth-child(2) i{
-    color: rgb(209, 53, 53);
-}
-main .sidebar .element:nth-child(3) i{
-    color: rgb(231, 180, 9);
-}
-
-main .sidebar .element::before{
-    content: '';
-    position: absolute;
-    left: 5px;
-    width: 4px;
-    height: 100%;
-    background: rgba(171, 206, 249, 0.53);
-    display: none;
-}
-
-main .sidebar .element.active::before{
-    display: block;
-}
-
-main .sidebar .element .counter{
-    position: absolute;
-    right: 20px;
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.498);
-}
-
-main .todo-list {
-    flex: 1;
-}
-
-main .todo-list .wrapper{
-    width: 99%;
-    max-height: 100%;
-    overflow: auto;
-    background: var(--bg-color-alt);
-    transition: all 0.3s ease;
-    margin: 0 auto;
-    border-radius: 20px;
-    scrollbar-width: thin; /* Dünne Scrollbar in Firefox */
-    scrollbar-color: rgba(22, 181, 213, 0.338) transparent; /* Daumenfarbe und Trackfarbe in Firefox */
-}
-
-/* Scrollbar Breite (für vertikale Scrollbars) */
-main .todo-list .wrapper::-webkit-scrollbar {
-    width: 7px;  /* Breite der vertikalen Scrollbar */
-}
-
-/* Track der Scrollbar */
-main .todo-list .wrapper::-webkit-scrollbar-track {
-    background: transparent; /* Farbe des Tracks */
-}
-
-/* Daumen der Scrollbar */
-main .todo-list .wrapper::-webkit-scrollbar-thumb {
-    background-color: rgba(22, 181, 213, 0.338); /* Farbe des Scroll-Daumen */
+.todo-list::-webkit-scrollbar-thumb {
+    background-color: rgba(22, 181, 213, 0.338);
     border-radius: 10px;
 }
 
-/* Hover-Effekt auf dem Scroll-Daumen */
-main .todo-list .wrapper::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(22, 181, 213, 0.518); /* Farbe, wenn die Maus über den Daumen fährt */
+.todo-list::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(22, 181, 213, 0.518);
 }
 
-/* initially hidden and only shown when the corresponding sidebar link is clicked */
-main .todo-list .section{
-    display: none;
+.todo-list .section{
+    display: none; /* initially hidden */
 }
-main .todo-list .section.show{
+.todo-list .section.show{
     display: block;
 }
 
-main .todo-list .section .item{
+.todo-list .section .item{
     padding: 15px 30px;
     display: flex;
     align-items: center;
     gap: 20px;
     position: relative;
     font-size: 1.2rem;
-    color: var(--primary-color);
+    color: var(--text-color);
+    background: var(--highlight-color);
     transition: all 0.3s ease;
+    margin-bottom: 2px;
 }
 
-main .todo-list .section .item i{
+.todo-list .section .item i{
     cursor: pointer;
+    font-size: 1.1rem;
 }
 
-main .todo-list .section .item i.fa-star{
+.todo-list .section .item i.fa-star{
     opacity: 0.22;
 }
-main .todo-list .section .item i.fa-star:hover{
+.todo-list .section .item i.fa-star:hover{
     opacity: 0.6;
 }
-main .todo-list .section .item i.fa-star.active{
+.todo-list .section .item i.fa-star.active{
     opacity: 1;
     color: rgb(231, 180, 9);
 }
-main .todo-list .section .item i.fa-star.animate{
+.todo-list .section .item i.fa-star.animate{
     animation: starBounce 0.5s ease; /* plays on click */
 }
 
@@ -389,33 +413,30 @@ main .todo-list .section .item i.fa-star.animate{
     }
 }
 
-main .todo-list .section .item i.fa-trash{
+.todo-list .section .item i.fa-trash{
     position: absolute;
     right: 30px;
 }
 
+/* ---------------------------- Darkmode Settings ------------------ */
 
-
-
-
-/* darkmode settings */
 body.darkmode{
-    --bg-color: rgb(15, 14, 39); /* überschreibt die Variable */
-    --bg-color-alt: rgba(255, 255, 255, 0.095); /* überschreibt die Variable */
+    --bg-color: rgb(15, 14, 39); 
+    --highlight-color: rgba(255, 255, 255, 0.095);
+    --text-color: white;
 } 
-body.darkmode main .sidebar .account .darkmode-toggle .slide .circle {
+
+body.darkmode .sidebar .account .darkmode-toggle .slide .circle {
     background: rgb(40, 38, 74);
-    transform: translateX(60px); /* Circle bewegt sich nach rechts */
+    transform: translateX(40px);
 }
-body.darkmode main .sidebar .account .darkmode-toggle .slide i.bx-sun{
+body.darkmode .sidebar .account .darkmode-toggle .slide i.bx-sun{
     color: black;
 }
-body.darkmode main .sidebar .account .darkmode-toggle .slide i.bx-moon{
+body.darkmode .sidebar .account .darkmode-toggle .slide i.bx-moon{
     color: white;
 }
-body.darkmode main .todo-list .section .item{
-    color: var(--light-color);
-}
+
 body.darkmode header img{
     filter: hue-rotate(0deg);
 }
@@ -427,4 +448,132 @@ body.darkmode .preloader img{
 }
 body.darkmode .preloader h1{
     color: #00a0e9;
+}
+
+/* ------------------------------- Media Querys -------------------------- */
+
+@media (max-width: 1150px){
+    .sidebar{
+        position: fixed;
+        top: 0;
+        transform: translateX(-100%);
+        transition: all 0.5s ease;
+    }
+
+    .sidebar.open{
+        transform: translateX(0);
+    }
+
+    .sidebar .mobile-sidebar-toggle{
+        position: absolute;
+        top: 16px;
+        right: 0;
+        transform: translateX(120%);
+        background: var(--primary-color);
+        height: 35px;
+        width: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.5s ease;
+        z-index: 999999999999999;
+    }
+
+    .sidebar .mobile-sidebar-toggle i{
+        font-size: .9rem;
+        transition: all 0.5s ease;
+    }
+}
+
+@media (max-width: 800px){
+    header h1 img {
+        width: 50px;
+    }
+    
+    header h1{
+        font-size: 3rem;
+        gap: 15px;
+    }
+    
+    header #new-note-button{
+        padding: 10px 20px;
+        font-size: 1.2rem;
+    }
+
+    .todo-list .section .item{
+        padding: 15px 20px;
+        font-size: 1.1rem;
+    }
+
+    .todo-list .section .item i.fa-trash{
+        right: 20px;
+    }
+}
+
+@media (max-width: 500px){
+    .preloader img{
+        width: 50px;
+        margin-right: 20px;
+    }
+    
+    .preloader h1{
+        font-size: 3rem;
+    }
+
+    .sidebar{
+        width: 100%;
+    }
+
+    .sidebar .account .darkmode-toggle .slide{
+        right: 60px;
+    }
+
+    .sidebar .mobile-sidebar-toggle.shift{
+        transform: translateX(-20%);
+    }
+
+    .add-note-modal{
+        width: 90%;
+    }
+
+    .add-note-modal #new-note-input{
+        font-size: 1rem;
+    }
+
+    .add-note-modal #add-note-button{
+        font-size: 1rem;
+    }
+
+    header{
+        gap: 20px
+    }
+
+    header h1 img {
+        width: 30px;
+    }
+    
+    header h1{
+        font-size: 2rem;
+        gap: 10px;
+    }
+
+    header #new-note-button{
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+    .todo-list .section .item{
+        padding: 15px;
+        font-size: 1rem;
+        gap: 15px;
+    }
+
+    .todo-list .section .item i{
+        font-size: 1rem;
+    }
+
+    .todo-list .section .item i.fa-trash{
+        right: 15px;
+    }
 }
