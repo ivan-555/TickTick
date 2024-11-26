@@ -6,7 +6,7 @@
     <title>TickTick</title>
     <!-- custom css -->
     <link rel="stylesheet" href="style.css">
-    <!-- script -->
+    <!-- custom js -->
     <script src="script.js" defer></script>
     <!-- font awesome cdn -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -49,6 +49,21 @@
                     <span>Wichtig</span>
                     <span class="counter"></span>
                 </div>
+                <div class="element heute">
+                    <i class="fa-solid fa-calendar-day"></i>
+                    <span>Heute</span>
+                    <span class="counter"></span>
+                </div>
+                <div class="element morgen">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    <span>Morgen</span>
+                    <span class="counter"></span>
+                </div>
+                <div class="element woche">
+                    <i class="fa-solid fa-calendar-week"></i>
+                    <span>Nächste 7 Tage</span>
+                    <span class="counter"></span>
+                </div>
             </div>
 
             <main>
@@ -64,12 +79,21 @@
                     <i class="fa-regular fa-circle-xmark" id="close-modal-button"></i>
                     <span>Neue Notiz</span>
                     <input type="text" id="new-note-input" placeholder="Notiztext...">
+                    <div class="wrapper">
+                        <span>Fälligkeit:</span>
+                        <input type="date" id="modalDateInput" required>
+                        <span>Wichtig:</span>
+                        <i class="fa-solid fa-star" id="modalFavoriteStar"></i>
+                    </div>
                     <span id="add-note-button">Hinzufügen</span>
                 </div>
 
                 <div class="todo-list">
                     <div class="section alle show"></div>
                     <div class="section wichtig"></div>
+                    <div class="section heute"></div>
+                    <div class="section morgen"></div>
+                    <div class="section woche"></div>
                 </div>
             </main>
     </div>
