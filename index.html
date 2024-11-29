@@ -14,6 +14,14 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <!-- favicon -->
     <link rel="icon" href="checkmark.png" type="image/x-icon">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Flatpickr Theme Material Blue -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Flatpickr German Locale -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/de.js"></script>
 </head>
 
 <body class="">
@@ -78,10 +86,10 @@
                 <div class="add-note-modal">
                     <i class="fa-regular fa-circle-xmark" id="close-modal-button"></i>
                     <span>Neue Notiz</span>
-                    <input type="text" id="new-note-input" placeholder="Notiztext...">
+                    <input type="text" id="new-note-input" placeholder="Notiztext..." autocomplete="off">
                     <div class="wrapper">
                         <span>Fälligkeit:</span>
-                        <input type="date" id="modalDateInput" required>
+                        <input type="text" id="modalDateInput" class="datepicker" placeholder="TT/MM/JJJJ" required autocomplete="off">
                         <span>Wichtig:</span>
                         <i class="fa-solid fa-star" id="modalFavoriteStar"></i>
                     </div>

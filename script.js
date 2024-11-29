@@ -1,3 +1,7 @@
+// =======================
+// Auswahl der DOM-Elemente
+// =======================
+
 const body = document.querySelector('body');
 const main = document.querySelector('main');
 const header = document.querySelector('header');
@@ -35,23 +39,210 @@ let modalDateInput = document.querySelector('#modalDateInput');
 let PageModeState = "lightmode";
 let SidebarState = "closed";
 
-// Beim Laden der Seite die Notizen rendern
-window.onload = renderNotes;
+// Funktion zur Initialisierung von Flatpickr mit deutscher Lokalisierung
+function initializeFlatpickr(input) {
+    // Überprüfen, ob das Eingabefeld bereits initialisiert wurde
+    if (input._flatpickr) return;
 
-// Page preloader
-window.addEventListener('load', function() {
+    flatpickr(input, {
+        locale: 'de', // Deutsche Lokalisierung
+        dateFormat: 'd.m.Y', // Deutsches Datumsformat: TT.MM.JJJJ
+        minDate: "today",
+        allowInput: false, // Verhindert die manuelle Eingabe
+        onChange: function(selectedDates, dateStr, instance) {
+            // Füge die Klasse 'selected' hinzu, wenn ein Datum ausgewählt wurde
+            if (selectedDates.length > 0) {
+                input.classList.add('selected');
+            } else {
+                input.classList.remove('selected');
+            }
+            // Trigger change event für Aktualisierungen
+            input.dispatchEvent(new Event('change'));
+        }
+    });
+}
+
+// Funktion, um die Notizen in LocalStorage zu speichern
+function saveNotesToLocalStorage(notes) {
+    localStorage.setItem('notes', JSON.stringify(notes));
+}
+
+// Funktion, um die Notizen aus LocalStorage zu laden
+function loadNotesFromLocalStorage() {
+    return JSON.parse(localStorage.getItem('notes')) || [];
+}
+
+// Funktion zum Erstellen eines neuen Notiz-Elements
+function createNoteElement(note, index) {
+    const noteElement = document.createElement('div');
+    noteElement.classList.add('item');
+    noteElement.innerHTML = `
+        <i class="fa-solid fa-star ${note.wichtig ? 'active' : ''}" data-index="${index}"></i>
+        <span class="note-text">${note.text}</span>
+        <i class="fa-solid fa-trash" data-index="${index}"></i>
+        <input type="text" class="datepicker" id="datepicker-${index}"  value="${note.datum ? note.datum : ''}" data-index="${index}" required placeholder="TT.MM.JJJJ" readonly>
+        <label class="date-label" for="datepicker-${index}">Datum:</label>
+    `;
+    
+    // Flatpickr für das Datumfeld anwenden
+    const dateInput = noteElement.querySelector('.datepicker');
+    initializeFlatpickr(dateInput);
+    
+    return noteElement;
+}
+
+// Funktion, um eine Notiz zu den entsprechenden Sektionen hinzuzufügen
+function addNoteToSections(note, index) {
+    // Hinzufügen zur "Alle"-Sektion
+    const alleNote = createNoteElement(note, index);
+    toDoListSectionAlle.appendChild(alleNote);
+    
+    // Hinzufügen zur "Wichtig"-Sektion, falls markiert
+    if (note.wichtig) {
+        const wichtigNote = createNoteElement(note, index);
+        toDoListSectionWichtig.appendChild(wichtigNote);
+    }
+    
+    // Nur hinzufügen zu den Datumsektionen, wenn ein Datum vorhanden ist
+    if (note.datum) {
+        const noteDate = parseDate(note.datum);
+        const today = new Date();
+        today.setHours(0,0,0,0); // Zeit auf Mitternacht setzen für genaue Vergleiche
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const weekLater = new Date(today);
+        weekLater.setDate(today.getDate() + 7);
+        
+        if (isSameDay(noteDate, today)) {
+            const heuteNote = createNoteElement(note, index);
+            toDoListSectionToday.appendChild(heuteNote);
+        }
+        
+        if (isSameDay(noteDate, tomorrow)) {
+            const morgenNote = createNoteElement(note, index);
+            toDoListSectionTomorrow.appendChild(morgenNote);
+        }
+        
+        if (noteDate > today && noteDate <= weekLater) {
+            const wocheNote = createNoteElement(note, index);
+            toDoListSectionWeek.appendChild(wocheNote);
+        }
+    }
+}
+
+// Hilfsfunktion zum Vergleich, ob zwei Daten am selben Tag liegen
+function isSameDay(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
+}
+
+// Aufgabe zur "Wichtig"-Sektion hinzufügen
+function addNoteToWichtigSection(note, index) {
+    // Überprüfen, ob die Aufgabe bereits in der "Wichtig"-Sektion ist
+    const existingNote = toDoListSectionWichtig.querySelector(`.fa-trash[data-index="${index}"]`);
+    if (existingNote) return;
+
+    // Aufgabe zur "Wichtig"-Sektion hinzufügen
+    const wichtigNote = createNoteElement(note, index);
+    toDoListSectionWichtig.appendChild(wichtigNote);
+
+    // Zähler aktualisieren
+    updateCounters();
+}
+
+// Aufgabe aus der "Wichtig"-Sektion entfernen
+function removeNoteFromWichtigSection(index) {
+    const noteElement = toDoListSectionWichtig.querySelector(`.fa-trash[data-index="${index}"]`);
+
+    if (noteElement) {
+        noteElement.parentElement.remove(); // Entfernt das Element
+    }
+
+    // Zähler aktualisieren
+    updateCounters();
+}
+
+// Zähler für die Sektionen aktualisieren
+function updateCounters() {
+    const allItemsCount = toDoListSectionAlle.querySelectorAll(".item").length;
+    const importantItemsCount = toDoListSectionWichtig.querySelectorAll(".item").length;
+    const todayItemsCount = toDoListSectionToday.querySelectorAll(".item").length;
+    const tomorrowItemsCount = toDoListSectionTomorrow.querySelectorAll(".item").length;
+    const weekItemsCount = toDoListSectionWeek.querySelectorAll(".item").length;
+
+    allNotesCounter.innerText = allItemsCount;
+    importantNotesCounter.innerText = importantItemsCount;
+    todayNotesCounter.innerText = todayItemsCount;
+    tomorrowNotesCounter.innerText = tomorrowItemsCount;
+    weekNotesCounter.innerText = weekItemsCount;
+}
+
+// Funktion zum Rendern der Notizen
+function renderNotes() {
+    const notes = loadNotesFromLocalStorage();
+    
+    // Alle Sektionen leeren, um doppelte Einträge zu vermeiden
+    toDoListSectionAlle.innerHTML = '';
+    toDoListSectionWichtig.innerHTML = '';
+    toDoListSectionToday.innerHTML = '';
+    toDoListSectionTomorrow.innerHTML = '';
+    toDoListSectionWeek.innerHTML = '';
+    
+    // Funktion, um ein Notiz-Element zu einer Sektion hinzuzufügen
+    notes.forEach((note, index) => {
+        addNoteToSections(note, index);
+    });
+
+    // Zähler aktualisieren
+    updateCounters();
+}
+
+// Funktion zum Parsen des Datums aus dem Format TT.MM.JJJJ
+function parseDate(dateString) {
+    const parts = dateString.split('.');
+    if (parts.length !== 3) return null; // Ungültiges Format, null zurückgeben
+
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1; // Monate sind 0-basiert
+    const year = parseInt(parts[2], 10);
+
+    const date = new Date(year, month, day);
+    if (isNaN(date)) return null; // Ungültiges Datum
+
+    return date;
+}
+
+// Funktion zur Formatierung des Datums für die Anzeige
+function formatDateForDisplay(dateString) {
+    return dateString || '';
+}
+
+// Funktion zur Formatierung des Datums für die Speicherung
+function formatDateForStorage(dateString) {
+    // Flatpickr stellt sicher, dass das Datum im Format 'd.m.Y' ist
+    // Falls das Feld leer ist, geben wir eine leere Zeichenkette zurück
+    return dateString ? dateString : '';
+}
+
+// Event-Listener für das Laden der Seite
+window.addEventListener('load', () => {
+    // Hinweis anzeigen, wenn das Gerät zu klein ist
+    if (window.innerWidth < 350) {
+        alert("Dieses Gerät entspricht nicht der Mindestgröße für diese Webseite. Bitte verwenden Sie ein Gerät mit einer Breite von mindestens 350px.");
+    }
+    // Notizen rendern
+    renderNotes();
+
+    // Page preloader ausblenden
     setTimeout(function() {
         preloader.classList.add('hidden');
     }, 2000);
-});
 
-// Dark-Mode und PageModeState basierend auf Local Storage oder den Systemeinstellungen festlegen
-window.addEventListener('load', () => {
+    // Dark-Mode und PageModeState basierend auf Local Storage oder den Systemeinstellungen festlegen
     const savedMode = localStorage.getItem('PageModeState');
     const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-
     if (savedMode) {
-        // Falls der Modus im Local Storage gespeichert ist, diesen anwenden
         PageModeState = savedMode;
         body.classList.add(savedMode);
     } else if (prefersDarkScheme.matches) {
@@ -61,23 +252,30 @@ window.addEventListener('load', () => {
         PageModeState = "lightmode";
         body.classList.add('lightmode');
     }
+
+    // Flatpickr initialisieren für alle vorhandenen Datumseingaben
+    const dateInputs = document.querySelectorAll('.datepicker');
+    dateInputs.forEach(function(input) {
+        initializeFlatpickr(input);
+    });
 });
+
 // Dark-Mode umschalten und Zustand im Local Storage speichern
 darkmodeToggleButton.addEventListener('click', () => {
     if (PageModeState === "lightmode") {
         PageModeState = "darkmode";
         body.classList.remove('lightmode');
         body.classList.add('darkmode');
-        localStorage.setItem('PageModeState', 'darkmode'); // Zustand speichern
+        localStorage.setItem('PageModeState', 'darkmode');
     } else {
         PageModeState = "lightmode";
         body.classList.remove('darkmode');
         body.classList.add('lightmode');
-        localStorage.setItem('PageModeState', 'lightmode'); // Zustand speichern
+        localStorage.setItem('PageModeState', 'lightmode');
     }
 });
 
-// Mobile Sidebar Toggle
+// Mobile Sidebar öffnen und schließen
 mobileSidebarToggle.addEventListener('click', () => {
     if (SidebarState === "closed") {
         Sidebar.classList.add('open');
@@ -96,7 +294,7 @@ mobileSidebarToggle.addEventListener('click', () => {
     }
 });
 
-// ToDo Liste filtern bei Klick auf Sidebar-Element
+// Zwischen den Sektionen wechseln/filtern
 sidebarElements.forEach((element, index) => {
     element.addEventListener('click', () => {
         Sidebar.classList.remove('open');
@@ -115,7 +313,7 @@ sidebarElements.forEach((element, index) => {
     });
 });
 
-// Aktives Sidebar-Element markieren
+// Aktive Sektion in der Sidebar markieren
 sidebarElements.forEach((element, index) => {
     element.addEventListener('click', () => {
         sidebarElements.forEach((el, elIndex) => {
@@ -133,17 +331,6 @@ newNoteButton.addEventListener('click', () => {
     addNoteModal.classList.add('show');
     blurrer.classList.add("active");
     newNoteInput.focus();
-
-    function getTodayDateString() {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
-
-     // Setze das min-Attribut auf das heutige Datum
-     modalDateInput.setAttribute('min', getTodayDateString());
 });
 
 // Modal schließen und Blur-Effekt entfernen
@@ -153,40 +340,53 @@ closeModalButton.addEventListener('click', () => {
     modalFavoriteStar.classList.remove('active');
     modalFavoriteStar.classList.remove('animate');
     modalDateInput.value = '';
+    modalDateInput.classList.remove('selected'); // Entferne 'selected' Klasse
     blurrer.classList.remove("active");
 });
 
-// Modal Star Icon
+// Favoriten-Stern im Modal umschalten
 modalFavoriteStar.addEventListener('click', () => {
     modalFavoriteStar.classList.toggle('active');
     modalFavoriteStar.classList.toggle('animate');
 });
 
-// Neue Notiz hinzufügen
+// Neue Notiz erstellen und im Local Storage speichern
 addNoteButton.addEventListener('click', () => {
-    const newNoteText = newNoteInput.value.trim(); // Leerzeichen am Anfang und Ende entfernen
+    const newNoteText = newNoteInput.value.trim(); // Leerzeichen vom Wert des Inputs entfernen
+
+    // Überprüfen, ob der Text leer ist
     if (!newNoteText) {
         newNoteInput.style.border = '2px solid red'; // Zeigt dem Benutzer das Problem
         setTimeout(() => newNoteInput.style.border = '', 2000); // Setzt den Zustand nach 2 Sekunden zurück
         return;
     }
 
+    // Überprüfen, ob die Notiz als wichtig markiert ist
     let isNoteImpartant = modalFavoriteStar.classList.contains('active');
 
-    // Neue Notiz erstellen
+    // Notiz in Local Storage speichern
     const notes = loadNotesFromLocalStorage();
-    notes.push({ text: newNoteText, wichtig: isNoteImpartant, datum: modalDateInput.value});
+
+    // Sicherstellen, dass das Datum im 'TT.MM.JJJJ' Format vorliegt
+    const formattedDate = formatDateForStorage(modalDateInput.value);
+
+    notes.push({ text: newNoteText, wichtig: isNoteImpartant, datum: formattedDate });
     saveNotesToLocalStorage(notes);
 
-    renderNotes(); // Notiz hinzufügen und neu rendern
+    // Notizen neu rendern
+    renderNotes();
 
-    newNoteInput.value = '';
+    // Eingabefelder zurücksetzen und Modal schließen
+    newNoteInput.value = ''; 
+    modalDateInput.value = '';
+    modalDateInput.classList.remove('selected'); // Entferne 'selected' Klasse
     modalFavoriteStar.classList.remove('active');
     modalFavoriteStar.classList.remove('animate');
-    modalDateInput.value = '';
     addNoteModal.classList.remove('show');
     blurrer.classList.remove("active");
 });
+
+// Enter-Taste zum Hinzufügen einer Notiz im Modal
 addNoteModal.addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
         event.preventDefault();
@@ -194,13 +394,10 @@ addNoteModal.addEventListener("keydown", function(event) {
     }
 });
 
-
 // Event-Delegation für das Klicken auf Stern- und Papierkorb-Icons
-toDoListSectionAlle.addEventListener('click', handleNoteClick);
-toDoListSectionWichtig.addEventListener('click', handleNoteClick);
-toDoListSectionToday.addEventListener('click', handleNoteClick);
-toDoListSectionTomorrow.addEventListener('click', handleNoteClick);
-toDoListSectionWeek.addEventListener('click', handleNoteClick);
+toDoListSections.forEach(section => {
+    section.addEventListener('click', handleNoteClick);
+});
 
 function handleNoteClick(e) {
     const notes = loadNotesFromLocalStorage();
@@ -208,266 +405,62 @@ function handleNoteClick(e) {
 
     // Papierkorb-Button wurde geklickt
     if (e.target.classList.contains('fa-trash')) {
-        notes.splice(index, 1); // Entfernt die Aufgabe aus dem Array
-        saveNotesToLocalStorage(notes); // Speichern
+        notes.splice(index, 1); // Entfernt die Aufgabe aus dem Local Storage Array
+        saveNotesToLocalStorage(notes); // Speichert das aktualisierte Array
         renderNotes(); // Notizen neu rendern
-        return; // Beenden, da die Aufgabe gelöscht wurde
+        return;
     }
 
     // Stern-Button wurde geklickt
     if (e.target.classList.contains('fa-star')) {
-        const note = notes[index];
+        const note = notes[index]; // Notiz anhand des Index erhalten
         const wasWichtig = note.wichtig; // Speichert den aktuellen Zustand
         note.wichtig = !note.wichtig; // Wichtig-Status umschalten
-        saveNotesToLocalStorage(notes); // Speichern
+        saveNotesToLocalStorage(notes); // Speichert die aktualisierte Aufgabe
 
-        // Stern-Status in Sektionen aktualisieren
+        // Stern-Status aktualisieren
         updateStarIcon(index, note.wichtig);
 
-        // Nur die Animation auslösen, wenn der Stern "wichtig" wird
-        if (!wasWichtig && note.wichtig) {
-            e.target.classList.add('animate');
-            setTimeout(() => {
-                e.target.classList.remove('animate'); // Animation nach kurzer Zeit entfernen
-            }, 500); // Dauer der Animation (0.5 Sekunden)
-        }
         // Aufgabe in der "Wichtig"-Sektion hinzufügen oder entfernen
         if (note.wichtig) {
             addNoteToWichtigSection(note, index);
+            e.target.classList.add('animate'); // Fügt die Animation hinzu
         } else {
             removeNoteFromWichtigSection(index);
+            e.target.classList.remove('animate'); // Entfernt die Animation
         }
     }
 }
 
-// Aufgabe zur "Wichtig"-Sektion hinzufügen
-function addNoteToWichtigSection(note, index) {
-    // Überprüfen, ob die Aufgabe bereits in der "Wichtig"-Sektion ist
-    const existingNote = toDoListSectionWichtig.querySelector(`.fa-trash[data-index="${index}"]`);
-    if (existingNote) return;
-
-    const newNoteElement = document.createElement('div');
-    newNoteElement.classList.add('item');
-    newNoteElement.innerHTML = `
-        <i class="fa-solid fa-star active" data-index="${index}"></i>
-        <span>${note.text}</span>
-        <i class="fa-solid fa-trash" data-index="${index}"></i>
-        <input type="date" value="${note.datum}" data-index="${index}" required>
-    `;
-    toDoListSectionWichtig.appendChild(newNoteElement); // Aufgabe in der "Wichtig"-Sektion hinzufügen
-
-    // Zähler für "Wichtig" aktualisieren
-    updateCounters();
+// Funktion zur Aktualisierung des Stern-Icons in allen Sektionen
+function updateStarIcon(index, status) {
+    const sections = [toDoListSectionAlle, toDoListSectionWichtig, toDoListSectionToday, toDoListSectionTomorrow, toDoListSectionWeek];
+    sections.forEach(section => {
+        const stars = section.querySelectorAll(`.fa-star[data-index="${index}"]`);
+        stars.forEach(star => {
+            if (status) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+    });
 }
-
-// Aufgabe aus der "Wichtig"-Sektion entfernen
-function removeNoteFromWichtigSection(index) {
-    const noteElement = toDoListSectionWichtig.querySelector(`.fa-trash[data-index="${index}"]`);
-    if (noteElement) {
-        noteElement.parentElement.remove(); // Entfernt das Element
-    }
-
-    // Zähler für "Wichtig" aktualisieren
-    updateCounters();
-}
-
 
 // Event-Delegation für Änderungen am Datumfeld
-toDoListSectionAlle.addEventListener('change', handleDateChange);
-toDoListSectionWichtig.addEventListener('change', handleDateChange);
-toDoListSectionToday.addEventListener('change', handleDateChange);
-toDoListSectionTomorrow.addEventListener('change', handleDateChange);
-toDoListSectionWeek.addEventListener('change', handleDateChange);
+toDoListSections.forEach(section => {
+    section.addEventListener('change', handleDateChange);
+});
 
 function handleDateChange(e) {
-    if (e.target.tagName === "INPUT" && e.target.type === "date") {
-        const notes = loadNotesFromLocalStorage();
-        const index = e.target.getAttribute('data-index');
-        const note = notes[index];
-        note.datum = e.target.value;
-        saveNotesToLocalStorage(notes);
-        renderNotes();
+    if (e.target.tagName === "INPUT" && e.target.classList.contains('datepicker')) {
+        const notes = loadNotesFromLocalStorage(); // Notizen aus dem Local Storage laden
+        const index = e.target.getAttribute('data-index'); // Index der geänderten Notiz
+        const note = notes[index]; // Notiz anhand des Index erhalten
+        note.datum = formatDateForStorage(e.target.value); // Datum aktualisieren
+        saveNotesToLocalStorage(notes); // Notizen speichern
+        renderNotes(); // Notizen neu rendern
     }
 
-    updateCounters();
+    updateCounters(); // Zähler aktualisieren
 }
-
-// Funktion, um eine Notiz in der "Heute"-Sektion hinzuzufügen
-function addNoteToTodaySection(note, index) {
-    const newNoteElement = document.createElement('div');
-    newNoteElement.classList.add('item');
-    newNoteElement.innerHTML = `
-        <i class="fa-solid fa-star ${note.wichtig ? 'active' : ''}" data-index="${index}"></i>
-        <span>${note.text}</span>
-        <i class="fa-solid fa-trash" data-index="${index}"></i>
-        <input type="date" value="${note.datum}" data-index="${index}" required>
-    `;
-    toDoListSectionToday.appendChild(newNoteElement);
-}
-
-// Funktion, um eine Notiz in der "Morgen"-Sektion hinzuzufügen
-function addNoteToTomorrowSection(note, index) {
-    const newNoteElement = document.createElement('div');
-    newNoteElement.classList.add('item');
-    newNoteElement.innerHTML = `
-        <i class="fa-solid fa-star ${note.wichtig ? 'active' : ''}" data-index="${index}"></i>
-        <span>${note.text}</span>
-        <i class="fa-solid fa-trash" data-index="${index}"></i>
-        <input type="date" value="${note.datum}" data-index="${index}" required>
-    `;
-    toDoListSectionTomorrow.appendChild(newNoteElement);
-}
-
-// Funktion, um eine Notiz in der "Woche"-Sektion hinzuzufügen
-function addNoteToWeekSection(note, index) {
-    const newNoteElement = document.createElement('div');
-    newNoteElement.classList.add('item');
-    newNoteElement.innerHTML = `
-        <i class="fa-solid fa-star ${note.wichtig ? 'active' : ''}" data-index="${index}"></i>
-        <span>${note.text}</span>
-        <i class="fa-solid fa-trash" data-index="${index}"></i>
-        <input type="date" value="${note.datum}" data-index="${index}" required>
-    `;
-    toDoListSectionWeek.appendChild(newNoteElement);
-}
-
-
-
-
-// Funktion zur Synchronisierung des Stern-Icons in allen Sektionen
-function updateStarIcon(index, status) {
-    const allSectionStars = toDoListSectionAlle.querySelectorAll(`.fa-star[data-index="${index}"]`);
-    const importantSectionStars = toDoListSectionWichtig.querySelectorAll(`.fa-star[data-index="${index}"]`);
-    const todaySectionStars = toDoListSectionToday.querySelectorAll(`.fa-star[data-index="${index}"]`);
-    const tomorrowSectionStars = toDoListSectionTomorrow.querySelectorAll(`.fa-star[data-index="${index}"]`);
-    const weekSectionStars = toDoListSectionWeek.querySelectorAll(`.fa-star[data-index="${index}"]`);
-    
-    // Stern-Status in der "Alle"-Sektion aktualisieren
-    allSectionStars.forEach(star => {
-        if (status) {
-            star.classList.add('active');
-        } else {
-            star.classList.remove('active');
-        }
-    });
-
-    // Stern-Status in der "Wichtig"-Sektion aktualisieren
-    importantSectionStars.forEach(star => {
-        if (status) {
-            star.classList.add('active');
-        } else {
-            star.classList.remove('active');
-        }
-    });
-
-    // Stern-Status in der "Heute"-Sektion aktualisieren
-    todaySectionStars.forEach(star => {
-        if (status) {
-            star.classList.add('active');
-        } else {
-            star.classList.remove('active');
-        }
-    });
-
-    // Stern-Status in der "Morgen"-Sektion aktualisieren
-    tomorrowSectionStars.forEach(star => {
-        if (status) {
-            star.classList.add('active');
-        } else {
-            star.classList.remove('active');
-        }
-    });
-
-    // Stern-Status in der "Woche"-Sektion aktualisieren
-    weekSectionStars.forEach(star => {
-        if (status) {
-            star.classList.add('active');
-        } else {
-            star.classList.remove('active');
-        }
-    });
-}
-
-// Funktion, um die Notizen in LocalStorage zu speichern
-function saveNotesToLocalStorage(notes) {
-    localStorage.setItem('notes', JSON.stringify(notes));
-}
-
-// Funktion, um die Notizen aus LocalStorage zu laden
-function loadNotesFromLocalStorage() {
-    return JSON.parse(localStorage.getItem('notes')) || [];
-}
-
-// Notizen aus dem Local Storage laden und rendern
-function renderNotes() {
-    const notes = loadNotesFromLocalStorage();
-    
-    // Alle Sektionen leeren, um doppelte Einträge zu vermeiden
-    toDoListSectionAlle.innerHTML = '';
-    toDoListSectionWichtig.innerHTML = '';
-    toDoListSectionToday.innerHTML = '';
-    toDoListSectionTomorrow.innerHTML = '';
-    toDoListSectionWeek.innerHTML = '';
-    
-    // Referenzdaten für Datumsspezifische Sektionen
-    const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1);
-    const weekLater = new Date();
-    weekLater.setDate(today.getDate() + 7);
-    
-    notes.forEach((note, index) => {
-        // Notiz in der "Alle"-Sektion hinzufügen
-        const newNoteElement = document.createElement('div');
-        newNoteElement.classList.add('item');
-        newNoteElement.innerHTML = `
-            <i class="fa-solid fa-star ${note.wichtig ? 'active' : ''}" data-index="${index}"></i>
-            <span>${note.text}</span>
-            <i class="fa-solid fa-trash" data-index="${index}"></i>
-            <input type="date" value="${note.datum}" data-index="${index}" required>
-        `;
-        toDoListSectionAlle.appendChild(newNoteElement);
-
-        // Falls die Notiz als wichtig markiert ist, auch in der "Wichtig"-Sektion hinzufügen
-        if (note.wichtig) {
-            addNoteToWichtigSection(note, index);
-        }
-
-        // Notiz anhand der Fälligkeit in die entsprechende Sektion hinzufügen
-        const noteDate = new Date(note.datum);
-
-        if (isSameDay(noteDate, today)) {
-            addNoteToTodaySection(note, index);
-        } else if (isSameDay(noteDate, tomorrow)) {
-            addNoteToTomorrowSection(note, index);
-        } else if (noteDate > today && noteDate <= weekLater) {
-            addNoteToWeekSection(note, index);
-        }
-    });
-
-    // Nach dem Rendern der Notizen die Zähler aktualisieren
-    updateCounters();
-}
-
-// Hilfsfunktion zum Vergleich, ob zwei Daten am selben Tag liegen
-function isSameDay(date1, date2) {
-    return date1.getFullYear() === date2.getFullYear() &&
-           date1.getMonth() === date2.getMonth() &&
-           date1.getDate() === date2.getDate();
-}
-
-// Funktion, um die Anzahl der Notizen in beiden Sektionen zu zählen
-function updateCounters() {
-    const allItemsCount = toDoListSectionAlle.querySelectorAll(".item").length;
-    const importantItemsCount = toDoListSectionWichtig.querySelectorAll(".item").length;
-    const todayItemsCount = toDoListSectionToday.querySelectorAll(".item").length;
-    const tomorrowItemsCount = toDoListSectionTomorrow.querySelectorAll(".item").length;
-    const weekItemsCount = toDoListSectionWeek.querySelectorAll(".item").length;
-
-    allNotesCounter.innerText = allItemsCount;  // Zähler für "Alle" aktualisieren
-    importantNotesCounter.innerText = importantItemsCount;  // Zähler für "Wichtig" aktualisieren
-    todayNotesCounter.innerText = todayItemsCount;  // Zähler für "Heute" aktualisieren
-    tomorrowNotesCounter.innerText = tomorrowItemsCount;  // Zähler für "Morgen" aktualisieren
-    weekNotesCounter.innerText = weekItemsCount;  // Zähler für "Woche" aktualisieren
-}
-

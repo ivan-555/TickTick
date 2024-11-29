@@ -19,6 +19,23 @@ body{
     font-family: 'Poppins', sans-serif;
 }
 
+.blurrer{
+    filter: blur(10px);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.blurrer.active{
+    opacity: 1;
+    visibility: visible;
+}
+
 /* ------------------------ Preloader ----------------------------- */
 
 .preloader{
@@ -100,7 +117,7 @@ body{
 
 /* Sidebar */
 .sidebar{
-    width: 350px;
+    min-width: 350px;
     height: 100%;
     background: var(--primary-color);
     color: var(--white-color);
@@ -268,23 +285,6 @@ header #new-note-button{
 
 /* ------------------------- Add Note Modal ---------------------- */
 
-.blurrer{
-    filter: blur(10px);
-    backdrop-filter: blur(10px);
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.blurrer.active{
-    opacity: 1;
-    visibility: visible;
-}
-
 .add-note-modal{
     width: 500px;
     background: var(--primary-color);
@@ -361,16 +361,14 @@ header #new-note-button{
     outline: none;
     border-radius: 5px;
     font-size: 1.1rem;
-    opacity: 0.5;
+    opacity: .4;
     transition: all 0.3s ease;
+    width: 120px;
 }
 .add-note-modal #modalDateInput:hover{
     opacity: .8;
 }
 .add-note-modal #modalDateInput:focus-within{
-    opacity: 1;
-}
-.add-note-modal #modalDateInput:valid{
     opacity: 1;
 }
 .add-note-modal #modalDateInput.selected{
@@ -400,6 +398,7 @@ header #new-note-button{
     padding-bottom: 0;
     margin-bottom: 10px;
     transition: scrollbar-color 0.3s ease;
+    max-width: calc(100vw - 350px);
 }
 
 .todo-list::-webkit-scrollbar {
@@ -425,15 +424,22 @@ header #new-note-button{
 
 .todo-list .section .item{
     padding: 15px 30px;
+    padding-right: 300px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 30px;
     position: relative;
     font-size: 1.2rem;
     color: var(--text-color);
     background: var(--highlight-color);
     transition: all 0.3s ease;
     margin-bottom: 2px;
+}
+
+.todo-list .section .item .note-text{
+    flex: 1;
+    overflow: hidden;
+    word-wrap: break-word;
 }
 
 .todo-list .section .item i{
@@ -465,7 +471,7 @@ header #new-note-button{
 }
 
 .todo-list .section .item input{
-    opacity: .1;
+    opacity: .3;
     position: absolute;
     right: 70px;
     background: none;
@@ -473,7 +479,7 @@ header #new-note-button{
     outline: none;
     color: var(--text-color);
     font-size: 1rem;
-    width: 150px;
+    width: 90px;
     transition: all 0.3s ease;
 }
 
@@ -483,16 +489,31 @@ header #new-note-button{
 .todo-list .section .item input:focus-within{
     opacity: 1;
 }
-.todo-list .section .item input:valid{
-    opacity: 1;
-}
-.todo-list .section .item input.selected{
+.todo-list .section .item input.datepicker[value]:not([value=""]) {
     opacity: 1;
 }
 
 .todo-list .section .item i.fa-trash{
     position: absolute;
     right: 30px;
+}
+
+.todo-list .section .item .date-label{
+    font-size: .9rem;
+    opacity: .3;
+    position: absolute;
+    right: 180px;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+.todo-list .section .item input:hover + .date-label{
+    opacity: 0.8;
+}
+.todo-list .section .item input:focus-within + .date-label{
+    opacity: 1;
+}
+.todo-list .section .item input.datepicker[value]:not([value=""]) + .date-label {
+    opacity: 1;
 }
 
 /* ---------------------------- Darkmode Settings ------------------ */
@@ -572,6 +593,9 @@ body.darkmode .todo-list::-webkit-scrollbar-thumb:hover {
         font-size: .9rem;
         transition: all 0.5s ease;
     }
+    .todo-list{
+        max-width: 100vw;
+    }
 }
 
 @media (max-width: 800px){
@@ -592,10 +616,17 @@ body.darkmode .todo-list::-webkit-scrollbar-thumb:hover {
     .todo-list .section .item{
         padding: 15px 20px;
         font-size: 1.1rem;
+        padding-right: 260px;
     }
 
     .todo-list .section .item i.fa-trash{
         right: 20px;
+    }
+    .todo-list .section .item input{
+        right: 50px;
+    }
+    .todo-list .section .item .date-label{
+        right: 160px;
     }
 }
 
@@ -629,6 +660,10 @@ body.darkmode .todo-list::-webkit-scrollbar-thumb:hover {
         font-size: 1rem;
     }
 
+    .add-note-modal .wrapper span{
+        font-size: 1rem;
+    }
+
     .add-note-modal #add-note-button{
         font-size: 1rem;
     }
@@ -655,6 +690,7 @@ body.darkmode .todo-list::-webkit-scrollbar-thumb:hover {
         padding: 15px;
         font-size: 1rem;
         gap: 15px;
+        padding-right: 160px;
     }
 
     .todo-list .section .item i{
@@ -663,5 +699,18 @@ body.darkmode .todo-list::-webkit-scrollbar-thumb:hover {
 
     .todo-list .section .item i.fa-trash{
         right: 15px;
+    }
+    .todo-list .section .item input{
+        right: 40px;
+        font-size: .9rem;
+    }
+    .todo-list .section .item .date-label{
+        display: none;
+    }
+}
+
+@media (max-width: 350px){
+    html{
+        display: none;
     }
 }
