@@ -134,9 +134,13 @@ body{
     margin-bottom: 10px;
 }
 
-.sidebar .settings .settings{
+.sidebar .settings .account{
     display: flex;
     gap: 20px;
+}
+
+.sidebar .settings .account i{
+    font-size: 1.4rem;
 }
 
 .sidebar .settings .darkmode-toggle .slide{
@@ -189,11 +193,6 @@ body{
 }
 
 .sidebar .element i{
-    font-size: 1.4rem;
-    width: 20px;
-}
-
-.sidebar .settings i{
     font-size: 1.4rem;
     width: 20px;
 }
@@ -427,7 +426,7 @@ header #new-note-button{
 /* ------------------------- Add Note Modal ---------------------- */
 
 .add-note-modal{
-    width: 500px;
+    width: 490px;
     background: var(--primary-color);
     position: absolute;
     top: 50%;
@@ -471,32 +470,13 @@ header #new-note-button{
 
 .add-note-modal .wrapper{
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    row-gap: 40px;
+    grid-template-columns: repeat(2, .5fr);
+    gap: 30px;
     align-items: center;
     place-items: center;
-    margin-bottom: 10px;
 }
 
-.add-note-modal #modalFavoriteStar{
-    cursor: pointer;
-    font-size: 1.5rem;
-    opacity: 0.4;
-    color: rgb(255, 255, 255);
-    transition: all 0.3s ease;
-}
-.add-note-modal #modalFavoriteStar:hover{
-    opacity: 0.8;
-}
-.add-note-modal #modalFavoriteStar.active{
-    opacity: 1;
-    color: rgb(231, 180, 9);
-}
-.add-note-modal #modalFavoriteStar.animate{
-    animation: starBounce 0.5s ease; /* plays on click */
-}
-
-.add-note-modal #modalDateInput{
+.add-note-modal .wrapper #modalDateInput{
     padding: 10px;
     border: none;
     outline: none;
@@ -506,14 +486,34 @@ header #new-note-button{
     transition: all 0.3s ease;
     width: 120px;
 }
-.add-note-modal #modalDateInput:hover{
+
+.add-note-modal .wrapper #modalDateInput:hover{
     opacity: .8;
 }
-.add-note-modal #modalDateInput:focus-within{
+.add-note-modal .wrapper #modalDateInput:focus-within{
     opacity: 1;
 }
-.add-note-modal #modalDateInput.selected{
+.add-note-modal .wrapper #modalDateInput.selected{
     opacity: 1;
+}
+
+.add-note-modal .wrapper #modalFavoriteStar{
+    cursor: pointer;
+    font-size: 1.5rem;
+    opacity: 0.4;
+    color: rgb(255, 255, 255);
+    transition: all 0.3s ease;
+}
+
+.add-note-modal .wrapper #modalFavoriteStar:hover{
+    opacity: 0.8;
+}
+.add-note-modal .wrapper #modalFavoriteStar.active{
+    opacity: 1;
+    color: rgb(231, 180, 9);
+}
+.add-note-modal .wrapper #modalFavoriteStar.animate{
+    animation: starBounce 0.5s ease; /* plays on click */
 }
 
 .add-note-modal #add-note-button{
@@ -790,20 +790,30 @@ body.darkmode .todo-list::-webkit-scrollbar-thumb:hover {
         padding: 8px;
     }
 
-    .mobile-settings .modal .settings{
+    .mobile-settings .modal .account{
         font-size: 1.1rem;
     }
 
     .add-note-modal{
         width: 90%;
+        gap: 35px;
     }
 
     .add-note-modal #new-note-input{
         font-size: 1rem;
     }
 
-    .add-note-modal .settings span{
+    .add-note-modal span{
         font-size: 1rem;
+    }
+
+    .add-note-modal .wrapper #modalDateInput{
+        font-size: 1rem;
+        width: 110px;
+    }
+
+    .add-note-modal .wrapper #modalFavoriteStar{
+        font-size: 1.4rem;
     }
 
     .add-note-modal #add-note-button{
