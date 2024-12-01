@@ -1,7 +1,3 @@
-// =======================
-// Auswahl der DOM-Elemente
-// =======================
-
 const body = document.querySelector('body');
 const main = document.querySelector('main');
 const header = document.querySelector('header');
@@ -14,30 +10,28 @@ const toDoListSectionWichtig = document.querySelector('.todo-list .section.wicht
 const toDoListSectionToday = document.querySelector('.todo-list .section.heute');
 const toDoListSectionTomorrow = document.querySelector('.todo-list .section.morgen');
 const toDoListSectionWeek = document.querySelector('.todo-list .section.woche');
-const allNotesCounter = document.querySelector('.sidebar .element.alle .counter');
-const importantNotesCounter = document.querySelector('.sidebar .element.wichtig .counter');
-const todayNotesCounter = document.querySelector('.sidebar .element.heute .counter');
-const tomorrowNotesCounter = document.querySelector('.sidebar .element.morgen .counter');
-const weekNotesCounter = document.querySelector('.sidebar .element.woche .counter');
 
-const Sidebar = document.querySelector('.sidebar');
 const sidebarElements = document.querySelectorAll('.sidebar .element');
-const mobileSidebarToggle = document.querySelector('.mobile-sidebar-toggle');
-const mobileSidebarToggleIcon = document.querySelector('.mobile-sidebar-toggle i');
-const darkmodeToggleButton = document.querySelector('.darkmode-toggle');
-const darkmodeToggleButtonCircle = document.querySelector('.darkmode-toggle .slide .circle');
+const mobileSidebarElements = document.querySelectorAll('.mobile-sidebar .element');
+const allNotesCounters = document.querySelectorAll('.element.alle .counter');
+const importantNotesCounters = document.querySelectorAll('.element.wichtig .counter');
+const todayNotesCounters = document.querySelectorAll('.element.heute .counter');
+const tomorrowNotesCounters = document.querySelectorAll('.element.morgen .counter');
+const weekNotesCounters = document.querySelectorAll('.element.woche .counter');
+const darkmodeToggleButtons = document.querySelectorAll('.darkmode-toggle');
+const mobileSettingsButton = document.querySelector('.mobile-settings .fa-gear');
+const mobileSettingsModal = document.querySelector('.mobile-settings .modal');
 
 const newNoteButton = document.querySelector('#new-note-button');
 const addNoteModal = document.querySelector('.add-note-modal');
 const closeModalButton = document.querySelector('#close-modal-button');
 const newNoteInput = document.querySelector('#new-note-input');
 const addNoteButton = document.querySelector('#add-note-button');
+const modalFavoriteStar = document.querySelector('#modalFavoriteStar');
+const modalDateInput = document.querySelector('#modalDateInput');
 const blurrer = document.querySelector('.blurrer');
 
-let modalFavoriteStar = document.querySelector('#modalFavoriteStar');
-let modalDateInput = document.querySelector('#modalDateInput');
 let PageModeState = "lightmode";
-let SidebarState = "closed";
 
 // Funktion zur Initialisierung von Flatpickr mit deutscher Lokalisierung
 function initializeFlatpickr(input) {
@@ -171,11 +165,11 @@ function updateCounters() {
     const tomorrowItemsCount = toDoListSectionTomorrow.querySelectorAll(".item").length;
     const weekItemsCount = toDoListSectionWeek.querySelectorAll(".item").length;
 
-    allNotesCounter.innerText = allItemsCount;
-    importantNotesCounter.innerText = importantItemsCount;
-    todayNotesCounter.innerText = todayItemsCount;
-    tomorrowNotesCounter.innerText = tomorrowItemsCount;
-    weekNotesCounter.innerText = weekItemsCount;
+    allNotesCounters.forEach(counter => counter.innerText = allItemsCount);
+    importantNotesCounters.forEach(counter => counter.innerText = importantItemsCount);
+    todayNotesCounters.forEach(counter => counter.innerText = todayItemsCount);
+    tomorrowNotesCounters.forEach(counter => counter.innerText = tomorrowItemsCount);
+    weekNotesCounters.forEach(counter => counter.innerText = weekItemsCount);
 }
 
 // Funktion zum Rendern der Notizen
@@ -261,48 +255,25 @@ window.addEventListener('load', () => {
 });
 
 // Dark-Mode umschalten und Zustand im Local Storage speichern
-darkmodeToggleButton.addEventListener('click', () => {
-    if (PageModeState === "lightmode") {
-        PageModeState = "darkmode";
-        body.classList.remove('lightmode');
-        body.classList.add('darkmode');
-        localStorage.setItem('PageModeState', 'darkmode');
-    } else {
-        PageModeState = "lightmode";
-        body.classList.remove('darkmode');
-        body.classList.add('lightmode');
-        localStorage.setItem('PageModeState', 'lightmode');
-    }
+darkmodeToggleButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        if (PageModeState === "lightmode") {
+            PageModeState = "darkmode";
+            body.classList.remove('lightmode');
+            body.classList.add('darkmode');
+            localStorage.setItem('PageModeState', 'darkmode');
+        } else {
+            PageModeState = "lightmode";
+            body.classList.remove('darkmode');
+            body.classList.add('lightmode');
+            localStorage.setItem('PageModeState', 'lightmode');
+        }
+    });
 });
 
-// Mobile Sidebar öffnen und schließen
-mobileSidebarToggle.addEventListener('click', () => {
-    if (SidebarState === "closed") {
-        Sidebar.classList.add('open');
-        mobileSidebarToggleIcon.style.transform = 'rotate(-180deg)';
-        SidebarState = "open";
-        if (window.innerWidth < 500) {
-            mobileSidebarToggle.classList.add("shift");
-        }
-    } else {
-        Sidebar.classList.remove('open');
-        mobileSidebarToggleIcon.style.transform = 'rotate(0deg)';
-        SidebarState = "closed";
-        if (window.innerWidth < 500) {
-            mobileSidebarToggle.classList.remove("shift");
-        }
-    }
-});
-
-// Zwischen den Sektionen wechseln/filtern
+// Zwischen den Sektionen wechseln
 sidebarElements.forEach((element, index) => {
     element.addEventListener('click', () => {
-        Sidebar.classList.remove('open');
-        SidebarState = "closed";
-        mobileSidebarToggleIcon.style.transform = 'rotate(0deg)';
-        if (window.innerWidth < 500) {
-            mobileSidebarToggle.classList.remove("shift");
-        }
         toDoListSections.forEach((section, sectionIndex) => {
             if (index === sectionIndex) {
                 section.classList.add('show');
@@ -311,6 +282,17 @@ sidebarElements.forEach((element, index) => {
             }
         });
     });
+});
+mobileSidebarElements.forEach((element, index) => {
+   element.addEventListener('click', () => {
+        toDoListSections.forEach((section, sectionIndex) => {
+            if (index === sectionIndex) {
+            section.classList.add('show');
+            } else {
+            section.classList.remove('show');
+            }
+        });
+   });
 });
 
 // Aktive Sektion in der Sidebar markieren
@@ -325,6 +307,29 @@ sidebarElements.forEach((element, index) => {
         });
     });
 });
+mobileSidebarElements.forEach((element, index) => {
+    element.addEventListener('click', () => {
+        mobileSidebarElements.forEach((el, elIndex) => {
+            if (index === elIndex) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
+            }
+        });
+    });
+});
+
+// Mobile Einstellungen öffnen und schließen
+mobileSettingsButton.addEventListener('click', () => {
+    mobileSettingsModal.classList.toggle('show');
+    body.addEventListener('click', closeMobileSettingsModal);
+});
+function closeMobileSettingsModal(e) {
+    if (!e.target.closest('.mobile-settings')) {
+        mobileSettingsModal.classList.remove('show');
+        body.removeEventListener('click', closeMobileSettingsModal);
+    }
+}
 
 // Modal öffnen und Seite blurren
 newNoteButton.addEventListener('click', () => {
