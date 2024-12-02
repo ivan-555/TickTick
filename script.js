@@ -31,7 +31,46 @@ const modalFavoriteStar = document.querySelector('#modalFavoriteStar');
 const modalDateInput = document.querySelector('#modalDateInput');
 const blurrer = document.querySelector('.blurrer');
 
-let PageModeState = "lightmode";
+let PageModeState = localStorage.getItem('PageModeState');
+const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+// Darkmode-Funktionen
+function applyPageModeState(mode) {
+    body.classList.remove('darkmode', 'lightmode');
+    body.classList.add(mode);
+}
+
+function savePageModeState(mode) {
+    localStorage.setItem('PageModeState', mode);
+}
+
+function initializeDarkMode() {
+    if (PageModeState) {
+        applyPageModeState(PageModeState);
+    } else if (prefersDarkScheme.matches) {
+        PageModeState = 'darkmode';
+        applyPageModeState('darkmode');
+    } else {
+        PageModeState = 'lightmode';
+        applyPageModeState('lightmode');
+    }
+}
+
+prefersDarkScheme.addEventListener('change', (event) => {
+    if (!localStorage.getItem('PageModeState')) {
+        const mode = event.matches ? 'darkmode' : 'lightmode';
+        applyPageModeState(mode);
+    }
+});
+
+darkmodeToggleButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const newMode = PageModeState === 'lightmode' ? 'darkmode' : 'lightmode';
+        applyPageModeState(newMode);
+        savePageModeState(newMode);
+        PageModeState = newMode;
+    });
+});
 
 // Funktion zur Initialisierung von Flatpickr mit deutscher Lokalisierung
 function initializeFlatpickr(input) {
@@ -234,54 +273,13 @@ window.addEventListener('load', () => {
         preloader.classList.add('hidden');
     }, 2000);
 
-    // Dark-Mode und PageModeState basierend auf Local Storage oder den Systemeinstellungen festlegen
-    const savedMode = localStorage.getItem('PageModeState');
-    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-    if (savedMode) {
-        PageModeState = savedMode;
-        body.classList.add(savedMode);
-    } else if (prefersDarkScheme.matches) {
-        PageModeState = "darkmode";
-        body.classList.add('darkmode');
-    } else {
-        PageModeState = "lightmode";
-        body.classList.add('lightmode');
-    }
+    /// Dark-Mode Zustand laden
+    initializeDarkMode();
 
     // Flatpickr initialisieren für alle vorhandenen Datumseingaben
     const dateInputs = document.querySelectorAll('.datepicker');
     dateInputs.forEach(function(input) {
         initializeFlatpickr(input);
-    });
-});
-
-// Event-Listener für Änderungen der Systempräferenz hinzufügen (optional)
-prefersDarkScheme.addEventListener('change', (event) => {
-    if (!savedMode) { // Nur wenn der Nutzer keine eigene Präferenz gesetzt hat
-        if (event.matches) {
-            body.classList.remove('lightmode');
-            body.classList.add('darkmode');
-        } else {
-            body.classList.remove('darkmode');
-            body.classList.add('lightmode');
-        }
-    }
-});
-
-// Dark-Mode umschalten und Zustand im Local Storage speichern
-darkmodeToggleButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        if (PageModeState === "lightmode") {
-            PageModeState = "darkmode";
-            body.classList.remove('lightmode');
-            body.classList.add('darkmode');
-            localStorage.setItem('PageModeState', 'darkmode');
-        } else {
-            PageModeState = "lightmode";
-            body.classList.remove('darkmode');
-            body.classList.add('lightmode');
-            localStorage.setItem('PageModeState', 'lightmode');
-        }
     });
 });
 

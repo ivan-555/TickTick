@@ -663,17 +663,23 @@ header #new-note-button{
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg-color: rgb(15, 14, 39); 
-        --highlight-color: rgba(255, 255, 255, 0.095);
+        --bg-color: rgb(15, 14, 39);
         --text-color: white;
+        --highlight-color: rgba(255, 255, 255, 0.095);
     }
 }
 
-body.darkmode{
-    --bg-color: rgb(15, 14, 39); 
-    --highlight-color: rgba(255, 255, 255, 0.095);
+body.lightmode {
+    --bg-color: rgb(229, 237, 245);
+    --text-color: black;
+    --highlight-color: rgba(62, 25, 25, 0.095);
+}
+
+body.darkmode {
+    --bg-color: rgb(15, 14, 39);
     --text-color: white;
-} 
+    --highlight-color: rgba(255, 255, 255, 0.095);
+}
 
 body.darkmode .sidebar .settings .darkmode-toggle .slide .circle {
     background: rgb(40, 38, 74);
