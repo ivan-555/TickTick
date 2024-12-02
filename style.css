@@ -659,6 +659,14 @@ header #new-note-button{
 
 /* ---------------------------- Darkmode Settings ------------------ */
 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: rgb(15, 14, 39); 
+        --highlight-color: rgba(255, 255, 255, 0.095);
+        --text-color: white;
+    }
+}
+
 body.darkmode{
     --bg-color: rgb(15, 14, 39); 
     --highlight-color: rgba(255, 255, 255, 0.095);

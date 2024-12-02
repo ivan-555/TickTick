@@ -255,6 +255,19 @@ window.addEventListener('load', () => {
     });
 });
 
+// Event-Listener für Änderungen der Systempräferenz hinzufügen (optional)
+prefersDarkScheme.addEventListener('change', (event) => {
+    if (!savedMode) { // Nur wenn der Nutzer keine eigene Präferenz gesetzt hat
+        if (event.matches) {
+            body.classList.remove('lightmode');
+            body.classList.add('darkmode');
+        } else {
+            body.classList.remove('darkmode');
+            body.classList.add('lightmode');
+        }
+    }
+});
+
 // Dark-Mode umschalten und Zustand im Local Storage speichern
 darkmodeToggleButtons.forEach(button => {
     button.addEventListener('click', () => {
