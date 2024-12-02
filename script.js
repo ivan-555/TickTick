@@ -42,6 +42,7 @@ function initializeFlatpickr(input) {
         locale: 'de', // Deutsche Lokalisierung
         dateFormat: 'd.m.Y', // Deutsches Datumsformat: TT.MM.JJJJ
         minDate: "today",
+        disableMobile: true, // Deaktiviert den mobilen nativen Picker
         allowInput: false, // Verhindert die manuelle Eingabe
         onChange: function(selectedDates, dateStr, instance) {
             // Füge die Klasse 'selected' hinzu, wenn ein Datum ausgewählt wurde
@@ -367,7 +368,7 @@ addNoteButton.addEventListener('click', () => {
     }
 
     // Überprüfen, ob die Notiz als wichtig markiert ist
-    let isNoteImpartant = modalFavoriteStar.classList.contains('active');
+    let isNoteImportant = modalFavoriteStar.classList.contains('active'); // Korrigiert von 'isNoteImpartant' zu 'isNoteImportant'
 
     // Notiz in Local Storage speichern
     const notes = loadNotesFromLocalStorage();
@@ -375,7 +376,7 @@ addNoteButton.addEventListener('click', () => {
     // Sicherstellen, dass das Datum im 'TT.MM.JJJJ' Format vorliegt
     const formattedDate = formatDateForStorage(modalDateInput.value);
 
-    notes.push({ text: newNoteText, wichtig: isNoteImpartant, datum: formattedDate });
+    notes.push({ text: newNoteText, wichtig: isNoteImportant, datum: formattedDate });
     saveNotesToLocalStorage(notes);
 
     // Notizen neu rendern
@@ -390,6 +391,7 @@ addNoteButton.addEventListener('click', () => {
     addNoteModal.classList.remove('show');
     blurrer.classList.remove("active");
 });
+
 
 // Enter-Taste zum Hinzufügen einer Notiz im Modal
 addNoteModal.addEventListener("keydown", function(event) {
