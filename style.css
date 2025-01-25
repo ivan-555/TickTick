@@ -7,14 +7,12 @@
 }
 
 :root{
-    /* fixed */
-    --primary-color: rgb(40, 38, 74);
-    --white-color: rgb(245, 245, 245);
-
-    /* change in darkmode */
-    --bg-color: rgb(229, 237, 245);
-    --text-color: black;
-    --highlight-color: rgba(62, 25, 25, 0.095);
+    --bg-color: rgb(229, 237, 245); /* for background */
+    --primary-color: rgb(38, 51, 74); /* for sidebar */
+    --white-color: rgb(245, 245, 245); /* for white text in sidebar */
+    --text-color: black; /* for main text */
+    --highlight-color: rgba(83, 46, 46, 0.095); /* for notes */
+    --accent-color: rgb(15, 42, 59); /* for star */
 }
 
 body{
@@ -62,7 +60,6 @@ body{
 
 .preloader img{
     width: 80px;
-    filter: hue-rotate(40deg);
     transition: all 0.3s ease;
     margin-right: 20px;
     animation: checkmarkScaling 1.5s ease;
@@ -70,7 +67,7 @@ body{
 
 .preloader h1{
     font-size: 4rem;
-    color: #607eff;
+    color: #00a0e9;
     display: flex;
     align-items: center;
     transition: all 0.3s ease;
@@ -117,71 +114,12 @@ body{
 
 /* ------------------------------ Sidebar ------------------------- */
 
-/* Sidebar */
 .sidebar{
     min-width: 320px;
     height: 100%;
     background: var(--primary-color);
     color: var(--white-color);
     z-index: 2;
-}
-
-.sidebar .settings{
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    font-size: 1.2rem;
-    position: relative;
-    border-bottom: 1px solid rgba(199, 199, 224, 0.171);
-    margin-bottom: 10px;
-}
-
-.sidebar .settings .account{
-    display: flex;
-    gap: 20px;
-}
-
-.sidebar .settings .account i{
-    font-size: 1.4rem;
-}
-
-.sidebar .settings .darkmode-toggle .slide{
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: white;
-    width: 80px;
-    height: 35px;
-    border-radius: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    cursor: pointer;
-}
-
-.sidebar .settings .darkmode-toggle .slide .circle{
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    position: absolute;
-    left: 5px;
-    background: rgb(193, 137, 48);
-    transition: all 0.3s ease;
-    transition: transform 0.3s ease;
-}
-
-.sidebar .settings .darkmode-toggle .slide i{
-    font-size: 1.2rem;
-    z-index: 2;
-    transition: all 0.3s ease;
-}
-.sidebar .settings .darkmode-toggle .slide i.bx-sun{
-    color: white;
-}
-.sidebar .settings .darkmode-toggle .slide i.bx-moon{
-    color: black;
 }
 
 .sidebar .element{
@@ -197,22 +135,6 @@ body{
 .sidebar .element i{
     font-size: 1.4rem;
     width: 20px;
-}
-
-.sidebar .element.alle i{
-    color: rgb(255, 255, 255);
-}
-.sidebar .element.wichtig i{
-    color: rgb(231, 180, 9);
-}
-.sidebar .element.heute i{
-    color: rgb(191, 55, 55);
-}
-.sidebar .element.morgen i{
-    color: rgb(180, 83, 31);
-}
-.sidebar .element.woche i{
-    color: rgb(233, 139, 24);
 }
 
 .sidebar .element::before{
@@ -246,7 +168,7 @@ body{
     display: flex;
     justify-content: center;
     display: none;
-    padding: 0 10px;
+    padding: 0 5px;
     padding-bottom: 5px;
     z-index: 99;
 }
@@ -266,10 +188,9 @@ body{
 }
 
 .mobile-sidebar .element i .counter{
-    background: var(--highlight-color);
     position: absolute;
     bottom: 0;
-    right: -20px;
+    right: -15px;
     border-radius: 50%;
     width: 15px;
     height: 15px;
@@ -277,7 +198,7 @@ body{
     align-items: center;
     justify-content: center;
     font-size: .6rem;
-    color: rgba(255, 255, 255, 0.607);
+    color: rgba(255, 255, 255, 0.498);
 }
 
 .mobile-sidebar .element::before{
@@ -294,87 +215,6 @@ body{
 
 .mobile-sidebar .element.active::before{
     display: block;
-}
-
-.mobile-settings{
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    color: var(--white-color);
-    font-size: 1.1rem;
-    z-index: 9;
-    display: none;
-}
-
-.mobile-settings i.fa-gear{
-    padding: 10px;
-    background: var(--primary-color);
-    border-radius: 50%;
-}
-
-.mobile-settings .modal{
-    position: fixed;
-    right: 20px;
-    top: 70px;
-    background: var(--primary-color);
-    width: fit-content;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    display: none;
-}
-
-.mobile-settings .modal.show{
-    display: flex;
-}
-
-.mobile-settings .modal .account{
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    font-size: 1.2rem;
-    position: relative;
-    border-bottom: 1px solid rgba(199, 199, 224, 0.171);
-    margin-bottom: 10px;
-    padding: 10px 20px;
-}
-
-.mobile-settings .modal .darkmode-toggle .slide{
-    background: white;
-    width: 80px;
-    height: 35px;
-    border-radius: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    position: relative;
-}
-
-.mobile-settings .modal .darkmode-toggle .slide .circle{
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    position: absolute;
-    left: 5px;
-    background: rgb(193, 137, 48);
-    transition: all 0.3s ease;
-    transition: transform 0.3s ease;
-}
-
-.mobile-settings .modal .darkmode-toggle .slide i{
-    font-size: 1.2rem;
-    z-index: 2;
-    transition: all 0.3s ease;
-}
-
-.mobile-settings .modal .darkmode-toggle .slide i.bx-sun{
-    color: white;
-}
-.mobile-settings .modal .darkmode-toggle .slide i.bx-moon{
-    color: black;
 }
 
 /* ------------------------- Main ------------------------------ */
@@ -399,13 +239,12 @@ header{
 
 header h1 img {
     width: 70px;
-    filter: hue-rotate(40deg);
     transition: all 0.3s ease;
 }
 
 header h1{
     font-size: 4rem;
-    color: #607eff;
+    color: #00a0e9;
     display: flex;
     align-items: center;
     gap: 20px;
@@ -520,7 +359,7 @@ header #new-note-button{
 
 .add-note-modal #add-note-button{
     padding: 10px 20px;
-    background: rgb(65, 63, 111);
+    background: #0180bb;
     color: var(--white-color);
     border: none;
     border-radius: 5px;
@@ -540,7 +379,6 @@ header #new-note-button{
     padding: 10px;
     padding-bottom: 0;
     margin-bottom: 10px;
-    transition: scrollbar-color 0.3s ease;
     max-width: calc(100vw - 320px);
 }
 
@@ -659,74 +497,6 @@ header #new-note-button{
     opacity: 1;
 }
 
-/* ---------------------------- Darkmode Settings ------------------ */
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg-color: rgb(15, 14, 39);
-        --text-color: white;
-        --highlight-color: rgba(255, 255, 255, 0.095);
-    }
-}
-
-body.lightmode {
-    --bg-color: rgb(229, 237, 245);
-    --text-color: black;
-    --highlight-color: rgba(62, 25, 25, 0.095);
-}
-
-body.darkmode {
-    --bg-color: rgb(15, 14, 39);
-    --text-color: white;
-    --highlight-color: rgba(255, 255, 255, 0.095);
-}
-
-body.darkmode .sidebar .settings .darkmode-toggle .slide .circle {
-    background: rgb(40, 38, 74);
-    transform: translateX(40px);
-}
-body.darkmode .sidebar .settings .darkmode-toggle .slide i.bx-sun{
-    color: black;
-}
-body.darkmode .sidebar .settings .darkmode-toggle .slide i.bx-moon{
-    color: white;
-}
-
-body.darkmode .mobile-settings .modal .darkmode-toggle .slide .circle {
-    background: rgb(40, 38, 74);
-    transform: translateX(40px);
-}
-body.darkmode .mobile-settings .modal .darkmode-toggle .slide i.bx-sun{
-    color: black;
-}
-body.darkmode .mobile-settings .modal .darkmode-toggle .slide i.bx-moon{
-    color: white;
-}
-
-body.darkmode header img{
-    filter: hue-rotate(0deg);
-}
-body.darkmode header h1{
-    color: #00a0e9;
-}
-body.darkmode .preloader img{
-    filter: hue-rotate(0deg);
-}
-body.darkmode .preloader h1{
-    color: #00a0e9;
-}
-
-body.darkmode .todo-list {
-    scrollbar-color: rgba(22, 181, 213, 0.338) transparent;
-}
-
-body.darkmode .todo-list::-webkit-scrollbar-thumb {
-    background-color: rgba(22, 181, 213, 0.338);
-}
-body.darkmode .todo-list::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(22, 181, 213, 0.518);
-}
-
 /* ------------------------------- Media Querys -------------------------- */
 
 @media (max-width: 1050px){
@@ -735,10 +505,6 @@ body.darkmode .todo-list::-webkit-scrollbar-thumb:hover {
     }
 
     .mobile-sidebar{
-        display: flex;
-    }
-
-    .mobile-settings{
         display: flex;
     }
 
@@ -796,18 +562,6 @@ body.darkmode .todo-list::-webkit-scrollbar-thumb:hover {
 
     .mobile-sidebar .element i .counter{
         font-size: .5rem;
-    }
-
-    .mobile-settings{
-        font-size: 1rem;
-    }
-
-    .mobile-settings i.fa-gear{
-        padding: 8px;
-    }
-
-    .mobile-settings .modal .account{
-        font-size: 1.1rem;
     }
 
     .add-note-modal{

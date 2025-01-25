@@ -18,9 +18,6 @@ const importantNotesCounters = document.querySelectorAll('.element.wichtig .coun
 const todayNotesCounters = document.querySelectorAll('.element.heute .counter');
 const tomorrowNotesCounters = document.querySelectorAll('.element.morgen .counter');
 const weekNotesCounters = document.querySelectorAll('.element.woche .counter');
-const darkmodeToggleButtons = document.querySelectorAll('.darkmode-toggle');
-const mobileSettingsButton = document.querySelector('.mobile-settings .fa-gear');
-const mobileSettingsModal = document.querySelector('.mobile-settings .modal');
 
 const newNoteButton = document.querySelector('#new-note-button');
 const addNoteModal = document.querySelector('.add-note-modal');
@@ -30,47 +27,6 @@ const addNoteButton = document.querySelector('#add-note-button');
 const modalFavoriteStar = document.querySelector('#modalFavoriteStar');
 const modalDateInput = document.querySelector('#modalDateInput');
 const blurrer = document.querySelector('.blurrer');
-
-let PageModeState = localStorage.getItem('PageModeState');
-const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-
-// Darkmode-Funktionen
-function applyPageModeState(mode) {
-    body.classList.remove('darkmode', 'lightmode');
-    body.classList.add(mode);
-}
-
-function savePageModeState(mode) {
-    localStorage.setItem('PageModeState', mode);
-}
-
-function initializeDarkMode() {
-    if (PageModeState) {
-        applyPageModeState(PageModeState);
-    } else if (prefersDarkScheme.matches) {
-        PageModeState = 'darkmode';
-        applyPageModeState('darkmode');
-    } else {
-        PageModeState = 'lightmode';
-        applyPageModeState('lightmode');
-    }
-}
-
-prefersDarkScheme.addEventListener('change', (event) => {
-    if (!localStorage.getItem('PageModeState')) {
-        const mode = event.matches ? 'darkmode' : 'lightmode';
-        applyPageModeState(mode);
-    }
-});
-
-darkmodeToggleButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const newMode = PageModeState === 'lightmode' ? 'darkmode' : 'lightmode';
-        applyPageModeState(newMode);
-        savePageModeState(newMode);
-        PageModeState = newMode;
-    });
-});
 
 // Funktion zur Initialisierung von Flatpickr mit deutscher Lokalisierung
 function initializeFlatpickr(input) {
@@ -216,14 +172,13 @@ function updateCounters() {
 function renderNotes() {
     const notes = loadNotesFromLocalStorage();
     
-    // Alle Sektionen leeren, um doppelte Einträge zu vermeiden
+    // Alle Sektionen leeren
     toDoListSectionAlle.innerHTML = '';
     toDoListSectionWichtig.innerHTML = '';
     toDoListSectionToday.innerHTML = '';
     toDoListSectionTomorrow.innerHTML = '';
     toDoListSectionWeek.innerHTML = '';
     
-    // Funktion, um ein Notiz-Element zu einer Sektion hinzuzufügen
     notes.forEach((note, index) => {
         addNoteToSections(note, index);
     });
@@ -235,7 +190,7 @@ function renderNotes() {
 // Funktion zum Parsen des Datums aus dem Format TT.MM.JJJJ
 function parseDate(dateString) {
     const parts = dateString.split('.');
-    if (parts.length !== 3) return null; // Ungültiges Format, null zurückgeben
+    if (parts.length !== 3) return null; // Ungültiges Format
 
     const day = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10) - 1; // Monate sind 0-basiert
@@ -247,15 +202,8 @@ function parseDate(dateString) {
     return date;
 }
 
-// Funktion zur Formatierung des Datums für die Anzeige
-function formatDateForDisplay(dateString) {
-    return dateString || '';
-}
-
 // Funktion zur Formatierung des Datums für die Speicherung
 function formatDateForStorage(dateString) {
-    // Flatpickr stellt sicher, dass das Datum im Format 'd.m.Y' ist
-    // Falls das Feld leer ist, geben wir eine leere Zeichenkette zurück
     return dateString ? dateString : '';
 }
 
@@ -273,9 +221,6 @@ window.addEventListener('load', () => {
         preloader.classList.add('hidden');
     }, 2000);
 
-    /// Dark-Mode Zustand laden
-    initializeDarkMode();
-
     // Flatpickr initialisieren für alle vorhandenen Datumseingaben
     const dateInputs = document.querySelectorAll('.datepicker');
     dateInputs.forEach(function(input) {
@@ -283,7 +228,7 @@ window.addEventListener('load', () => {
     });
 });
 
-// Zwischen den Sektionen wechseln
+// Zwischen den Sektionen wechseln (Sidebar & Mobile)
 sidebarElements.forEach((element, index) => {
     element.addEventListener('click', () => {
         toDoListSections.forEach((section, sectionIndex) => {
@@ -296,15 +241,15 @@ sidebarElements.forEach((element, index) => {
     });
 });
 mobileSidebarElements.forEach((element, index) => {
-   element.addEventListener('click', () => {
+    element.addEventListener('click', () => {
         toDoListSections.forEach((section, sectionIndex) => {
             if (index === sectionIndex) {
-            section.classList.add('show');
+                section.classList.add('show');
             } else {
-            section.classList.remove('show');
+                section.classList.remove('show');
             }
         });
-   });
+    });
 });
 
 // Aktive Sektion in der Sidebar markieren
@@ -331,18 +276,6 @@ mobileSidebarElements.forEach((element, index) => {
     });
 });
 
-// Mobile Einstellungen öffnen und schließen
-mobileSettingsButton.addEventListener('click', () => {
-    mobileSettingsModal.classList.toggle('show');
-    body.addEventListener('click', closeMobileSettingsModal);
-});
-function closeMobileSettingsModal(e) {
-    if (!e.target.closest('.mobile-settings')) {
-        mobileSettingsModal.classList.remove('show');
-        body.removeEventListener('click', closeMobileSettingsModal);
-    }
-}
-
 // Modal öffnen und Seite blurren
 newNoteButton.addEventListener('click', () => {
     addNoteModal.classList.add('show');
@@ -357,7 +290,7 @@ closeModalButton.addEventListener('click', () => {
     modalFavoriteStar.classList.remove('active');
     modalFavoriteStar.classList.remove('animate');
     modalDateInput.value = '';
-    modalDateInput.classList.remove('selected'); // Entferne 'selected' Klasse
+    modalDateInput.classList.remove('selected');
     blurrer.classList.remove("active");
 });
 
@@ -367,42 +300,33 @@ modalFavoriteStar.addEventListener('click', () => {
     modalFavoriteStar.classList.toggle('animate');
 });
 
-// Neue Notiz erstellen und im Local Storage speichern
+// Neue Notiz erstellen
 addNoteButton.addEventListener('click', () => {
-    const newNoteText = newNoteInput.value.trim(); // Leerzeichen vom Wert des Inputs entfernen
-
-    // Überprüfen, ob der Text leer ist
+    const newNoteText = newNoteInput.value.trim();
     if (!newNoteText) {
-        newNoteInput.style.border = '2px solid red'; // Zeigt dem Benutzer das Problem
-        setTimeout(() => newNoteInput.style.border = '', 2000); // Setzt den Zustand nach 2 Sekunden zurück
+        newNoteInput.style.border = '2px solid red';
+        setTimeout(() => newNoteInput.style.border = '', 2000);
         return;
     }
 
-    // Überprüfen, ob die Notiz als wichtig markiert ist
-    let isNoteImportant = modalFavoriteStar.classList.contains('active'); // Korrigiert von 'isNoteImpartant' zu 'isNoteImportant'
+    const isNoteImportant = modalFavoriteStar.classList.contains('active');
 
-    // Notiz in Local Storage speichern
     const notes = loadNotesFromLocalStorage();
-
-    // Sicherstellen, dass das Datum im 'TT.MM.JJJJ' Format vorliegt
     const formattedDate = formatDateForStorage(modalDateInput.value);
 
     notes.push({ text: newNoteText, wichtig: isNoteImportant, datum: formattedDate });
     saveNotesToLocalStorage(notes);
 
-    // Notizen neu rendern
     renderNotes();
 
-    // Eingabefelder zurücksetzen und Modal schließen
-    newNoteInput.value = ''; 
+    newNoteInput.value = '';
     modalDateInput.value = '';
-    modalDateInput.classList.remove('selected'); // Entferne 'selected' Klasse
+    modalDateInput.classList.remove('selected');
     modalFavoriteStar.classList.remove('active');
     modalFavoriteStar.classList.remove('animate');
     addNoteModal.classList.remove('show');
     blurrer.classList.remove("active");
 });
-
 
 // Enter-Taste zum Hinzufügen einer Notiz im Modal
 addNoteModal.addEventListener("keydown", function(event) {
@@ -412,47 +336,50 @@ addNoteModal.addEventListener("keydown", function(event) {
     }
 });
 
-// Event-Delegation für das Klicken auf Stern- und Papierkorb-Icons
+// Event-Delegation für Stern/Papierkorb in den einzelnen Sektionen
 toDoListSections.forEach(section => {
     section.addEventListener('click', handleNoteClick);
 });
 
 function handleNoteClick(e) {
     const notes = loadNotesFromLocalStorage();
-    const index = e.target.getAttribute('data-index'); // Index des Elements
+    const index = e.target.getAttribute('data-index');
 
-    // Papierkorb-Button wurde geklickt
+    // Papierkorb
     if (e.target.classList.contains('fa-trash')) {
-        notes.splice(index, 1); // Entfernt die Aufgabe aus dem Local Storage Array
-        saveNotesToLocalStorage(notes); // Speichert das aktualisierte Array
-        renderNotes(); // Notizen neu rendern
+        notes.splice(index, 1);
+        saveNotesToLocalStorage(notes);
+        renderNotes();
         return;
     }
 
-    // Stern-Button wurde geklickt
+    // Stern
     if (e.target.classList.contains('fa-star')) {
-        const note = notes[index]; // Notiz anhand des Index erhalten
-        const wasWichtig = note.wichtig; // Speichert den aktuellen Zustand
-        note.wichtig = !note.wichtig; // Wichtig-Status umschalten
-        saveNotesToLocalStorage(notes); // Speichert die aktualisierte Aufgabe
+        const note = notes[index];
+        note.wichtig = !note.wichtig;
+        saveNotesToLocalStorage(notes);
 
-        // Stern-Status aktualisieren
         updateStarIcon(index, note.wichtig);
 
-        // Aufgabe in der "Wichtig"-Sektion hinzufügen oder entfernen
         if (note.wichtig) {
             addNoteToWichtigSection(note, index);
-            e.target.classList.add('animate'); // Fügt die Animation hinzu
+            e.target.classList.add('animate');
         } else {
             removeNoteFromWichtigSection(index);
-            e.target.classList.remove('animate'); // Entfernt die Animation
+            e.target.classList.remove('animate');
         }
     }
 }
 
-// Funktion zur Aktualisierung des Stern-Icons in allen Sektionen
+// Stern-Icon in allen Sektionen aktualisieren
 function updateStarIcon(index, status) {
-    const sections = [toDoListSectionAlle, toDoListSectionWichtig, toDoListSectionToday, toDoListSectionTomorrow, toDoListSectionWeek];
+    const sections = [
+        toDoListSectionAlle,
+        toDoListSectionWichtig,
+        toDoListSectionToday,
+        toDoListSectionTomorrow,
+        toDoListSectionWeek
+    ];
     sections.forEach(section => {
         const stars = section.querySelectorAll(`.fa-star[data-index="${index}"]`);
         stars.forEach(star => {
@@ -465,20 +392,19 @@ function updateStarIcon(index, status) {
     });
 }
 
-// Event-Delegation für Änderungen am Datumfeld
+// Datum ändern
 toDoListSections.forEach(section => {
     section.addEventListener('change', handleDateChange);
 });
 
 function handleDateChange(e) {
     if (e.target.tagName === "INPUT" && e.target.classList.contains('datepicker')) {
-        const notes = loadNotesFromLocalStorage(); // Notizen aus dem Local Storage laden
-        const index = e.target.getAttribute('data-index'); // Index der geänderten Notiz
-        const note = notes[index]; // Notiz anhand des Index erhalten
-        note.datum = formatDateForStorage(e.target.value); // Datum aktualisieren
-        saveNotesToLocalStorage(notes); // Notizen speichern
-        renderNotes(); // Notizen neu rendern
+        const notes = loadNotesFromLocalStorage();
+        const index = e.target.getAttribute('data-index');
+        const note = notes[index];
+        note.datum = formatDateForStorage(e.target.value);
+        saveNotesToLocalStorage(notes);
+        renderNotes();
     }
-
-    updateCounters(); // Zähler aktualisieren
+    updateCounters();
 }
