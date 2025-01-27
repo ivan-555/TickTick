@@ -11,13 +11,12 @@ const toDoListSectionToday = document.querySelector('.todo-list .section.heute')
 const toDoListSectionTomorrow = document.querySelector('.todo-list .section.morgen');
 const toDoListSectionWeek = document.querySelector('.todo-list .section.woche');
 
-const sidebarElements = document.querySelectorAll('.sidebar .element');
-const mobileSidebarElements = document.querySelectorAll('.mobile-sidebar .element');
-const allNotesCounters = document.querySelectorAll('.element.alle .counter');
-const importantNotesCounters = document.querySelectorAll('.element.wichtig .counter');
-const todayNotesCounters = document.querySelectorAll('.element.heute .counter');
-const tomorrowNotesCounters = document.querySelectorAll('.element.morgen .counter');
-const weekNotesCounters = document.querySelectorAll('.element.woche .counter');
+const navbarElements = document.querySelectorAll('.navbar .element');
+const allNotesCounters = document.querySelectorAll('.navbar .element.alle .counter');
+const importantNotesCounters = document.querySelectorAll('.navbar .element.wichtig .counter');
+const todayNotesCounters = document.querySelectorAll('.navbar .element.heute .counter');
+const tomorrowNotesCounters = document.querySelectorAll('.navbar .element.morgen .counter');
+const weekNotesCounters = document.querySelectorAll('.navbar .element.woche .counter');
 
 const newNoteButton = document.querySelector('#new-note-button');
 const addNoteModal = document.querySelector('.add-note-modal');
@@ -228,19 +227,8 @@ window.addEventListener('load', () => {
     });
 });
 
-// Zwischen den Sektionen wechseln (Sidebar & Mobile)
-sidebarElements.forEach((element, index) => {
-    element.addEventListener('click', () => {
-        toDoListSections.forEach((section, sectionIndex) => {
-            if (index === sectionIndex) {
-                section.classList.add('show');
-            } else {
-                section.classList.remove('show');
-            }
-        });
-    });
-});
-mobileSidebarElements.forEach((element, index) => {
+// Navbar Sektionen switchen
+navbarElements.forEach((element, index) => {
     element.addEventListener('click', () => {
         toDoListSections.forEach((section, sectionIndex) => {
             if (index === sectionIndex) {
@@ -252,21 +240,10 @@ mobileSidebarElements.forEach((element, index) => {
     });
 });
 
-// Aktive Sektion in der Sidebar markieren
-sidebarElements.forEach((element, index) => {
+// Aktive Sektion in der Navbar markieren
+navbarElements.forEach((element, index) => {
     element.addEventListener('click', () => {
-        sidebarElements.forEach((el, elIndex) => {
-            if (index === elIndex) {
-                el.classList.add('active');
-            } else {
-                el.classList.remove('active');
-            }
-        });
-    });
-});
-mobileSidebarElements.forEach((element, index) => {
-    element.addEventListener('click', () => {
-        mobileSidebarElements.forEach((el, elIndex) => {
+        navbarElements.forEach((el, elIndex) => {
             if (index === elIndex) {
                 el.classList.add('active');
             } else {

@@ -114,66 +114,23 @@ body{
 
 /* ------------------------------ Sidebar ------------------------- */
 
-.sidebar{
-    min-width: 320px;
-    height: 100%;
-    background: var(--primary-color);
-    color: var(--white-color);
-    z-index: 2;
-}
-
-.sidebar .element{
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    font-size: 1.2rem;
-    position: relative;
-    cursor: pointer;
-}
-
-.sidebar .element i{
-    font-size: 1.4rem;
-    width: 20px;
-}
-
-.sidebar .element::before{
-    content: '';
-    position: absolute;
-    left: 5px;
-    width: 4px;
-    height: 100%;
-    background: rgba(171, 206, 249, 0.53);
-    display: none;
-}
-
-.sidebar .element.active::before{
-    display: block;
-}
-
-.sidebar .element .counter{
-    position: absolute;
-    right: 20px;
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.498);
-}
-
-.mobile-sidebar{
+.navbar{
     background: var(--primary-color);
     color: var(--white-color);
     position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
     display: flex;
     justify-content: center;
-    display: none;
-    padding: 0 5px;
+    padding: 0 20px;
     padding-bottom: 5px;
     z-index: 99;
+    border-radius: 30px;
 }
 
-.mobile-sidebar .element{
+.navbar .element{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -181,16 +138,18 @@ body{
     gap: 5px;
     padding: 17px 0;
     position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.mobile-sidebar .element i{
+.navbar .element i{
     position: relative;
 }
 
-.mobile-sidebar .element i .counter{
+.navbar .element i .counter{
     position: absolute;
     bottom: 0;
-    right: -15px;
+    right: -20px;
     border-radius: 50%;
     width: 15px;
     height: 15px;
@@ -201,20 +160,29 @@ body{
     color: rgba(255, 255, 255, 0.498);
 }
 
-.mobile-sidebar .element::before{
+.navbar .element::before{
     content: '';
     position: absolute;
     bottom: 0;
-    width: 100%;
-    left: 0;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
     height: 4px;
     background: rgba(171, 206, 249, 0.53);
-    display: none;
+    opacity: 0;
     border-radius: 10px;
+    transition: opacity 0.2s ease;
 }
 
-.mobile-sidebar .element.active::before{
-    display: block;
+.navbar .element.active::before{
+    opacity: 1;
+}
+
+.navbar .element:hover:not(.active){
+    transform: translateY(-3px);
+}
+.navbar .element:hover:not(.active)::before{
+    opacity: .4;
 }
 
 /* ------------------------- Main ------------------------------ */
@@ -376,10 +344,8 @@ header #new-note-button{
     overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
-    padding: 10px;
-    padding-bottom: 0;
+    padding: 0 50px;
     margin-bottom: 10px;
-    max-width: calc(100vw - 320px);
 }
 
 .todo-list::-webkit-scrollbar {
@@ -454,7 +420,7 @@ header #new-note-button{
 .todo-list .section .item input{
     opacity: .3;
     position: absolute;
-    right: 70px;
+    right: 85px;
     background: none;
     border: none;
     outline: none;
@@ -483,9 +449,10 @@ header #new-note-button{
     font-size: .9rem;
     opacity: .3;
     position: absolute;
-    right: 180px;
+    right: 190px;
     color: var(--text-color);
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 .todo-list .section .item input:hover + .date-label{
     opacity: 0.8;
@@ -499,22 +466,18 @@ header #new-note-button{
 
 /* ------------------------------- Media Querys -------------------------- */
 
-@media (max-width: 1050px){
-    .sidebar{
-        display: none;
-    }
-
-    .mobile-sidebar{
-        display: flex;
-    }
-
+@media (max-width: 1300px){
     .todo-list{
-        max-width: 100vw;
-        margin-bottom: 80px;
+        margin-bottom: 85px;
+    }
+    .navbar{
+        width: 100vw;
+        bottom: 0;
+        border-radius: 0;
     }
 }
 
-@media (max-width: 800px){
+@media (max-width: 900px){
     header h1 img {
         width: 50px;
     }
@@ -529,6 +492,9 @@ header #new-note-button{
         font-size: 1.2rem;
     }
 
+    .todo-list{
+        padding: 0 20px;
+    }
     .todo-list .section .item{
         padding: 15px 20px;
         font-size: 1.1rem;
@@ -546,7 +512,7 @@ header #new-note-button{
     }
 }
 
-@media (max-width: 500px){
+@media (max-width: 550px){
     .preloader img{
         width: 50px;
         margin-right: 20px;
@@ -556,11 +522,16 @@ header #new-note-button{
         font-size: 3rem;
     }
 
-    .mobile-sidebar .element{
+    .navbar{
+        padding: 0 10px;
+        padding-bottom: 5px;
+    }
+
+    .navbar .element{
         font-size: .9rem;
     }
 
-    .mobile-sidebar .element i .counter{
+    .navbar .element i .counter{
         font-size: .5rem;
     }
 
@@ -608,6 +579,11 @@ header #new-note-button{
         font-size: 1rem;
     }
 
+    .todo-list{
+        padding: 0 10px;
+        margin-bottom: 80px;
+    }
+
     .todo-list .section .item{
         padding: 15px;
         font-size: 1rem;
@@ -628,6 +604,13 @@ header #new-note-button{
     }
     .todo-list .section .item .date-label{
         display: none;
+    }
+}
+
+@media (max-width: 400px){
+    .navbar{
+        padding: 0;
+        padding-bottom: 5px;
     }
 }
 
